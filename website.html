@@ -1,0 +1,1084 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tech Safe • Disaster Preparedness Gear</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Define a custom theme and gradients using CSS variables for complex elements */
+        
+         :root {
+            --bg-start: #0f172a;
+            /* Deeper slate */
+            --bg-end: #020617;
+            /* Darkest slate */
+            --accent-light: #6EE7B7;
+            /* Emerald-300 */
+            --accent-dark: #34d399;
+            /* Emerald-500 */
+            --primary: #818cf8;
+            /* Indigo-400 */
+        }
+        /* Essential resets and base styles */
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            /* Enables the ::before pseudo-element */
+        }
+        /* Dark overlay for better text readability and maintaining the dark theme 
+            *** UPDATED: Now uses the disaster illustration image with a dark overlay *** */
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* Set image, assuming it's named 'likod.png' and is in the same folder */
+            /* NOTE: If likod.png isn't available, the image likod.jpg you uploaded may be used instead. */
+            background: url('likod.png') no-repeat center center fixed;
+            background-size: cover;
+            /* Overlay to darken the image and blend with the dark theme */
+            opacity: 1;
+            z-index: -1;
+            /* Add a dark, transparent color layer on top of the image (70% opacity black) */
+            box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.7);
+        }
+        /* Custom style for the fixed header with backdrop blur */
+        
+        .sticky-header {
+            /* Kept the same opacity for header */
+            background-color: rgba(15, 23, 42, 0.85);
+            /* slate-900 with 85% opacity */
+            backdrop-filter: blur(8px);
+        }
+        /* --- ORB ANIMATION STYLES (Removed to make way for the video) --- */
+        
+        .visual {
+            position: relative;
+            height: 380px;
+            overflow: hidden;
+            /* We will remove this section as it's replaced by the video */
+        }
+        /* Keeping orb and floating styles for completeness in case you want to use them elsewhere, 
+            but they are no longer in the HTML structure for the home section */
+        
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(35px);
+            transform: translate(-50%, -50%);
+            mix-blend-mode: screen;
+            opacity: 0.9;
+            animation: moveOrbs 12s infinite alternate ease-in-out;
+            will-change: transform;
+        }
+        
+        .orb.one {
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            left: 20%;
+            top: 30%;
+            width: 140px;
+            height: 140px;
+            animation-delay: 0s;
+        }
+        
+        .orb.two {
+            background: linear-gradient(135deg, #34d399, #60a5fa);
+            left: 80%;
+            top: 70%;
+            width: 200px;
+            height: 200px;
+            animation-delay: -4s;
+        }
+        
+        .orb.three {
+            background: linear-gradient(135deg, #f97316, #f472b6);
+            left: 55%;
+            top: 20%;
+            width: 100px;
+            height: 100px;
+            animation-delay: -8s;
+        }
+        
+        @keyframes moveOrbs {
+            0% {
+                transform: translate(-50%, -50%) translate(0, 0);
+            }
+            100% {
+                transform: translate(-50%, -50%) translate(100px, 50px);
+            }
+        }
+        
+        .floating {
+            position: absolute;
+            will-change: transform;
+            transition: transform 0.05s ease-out;
+        }
+        
+        .floating.f1 {
+            top: 15%;
+            left: 10%;
+        }
+        
+        .floating.f2 {
+            top: 85%;
+            left: 90%;
+        }
+        
+        .floating.f3 {
+            top: 50%;
+            left: 40%;
+        }
+        
+        .floating.f4 {
+            top: 65%;
+            left: 15%;
+        }
+        
+        .floating.f5 {
+            top: 25%;
+            left: 80%;
+        }
+        
+        .floating.f6 {
+            top: 80%;
+            left: 45%;
+        }
+        
+        .floating.f7 {
+            top: 30%;
+            left: 60%;
+        }
+        /* Responsive overrides for sections */
+        
+        section {
+            min-height: calc(100vh - 84px);
+            display: grid;
+            align-items: center;
+        }
+        /* Panel specific styles (UPDATED FOR SCROLLABILITY) */
+        
+        .slide-panel {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 350px;
+            max-width: 90vw;
+            height: 100vh;
+            background: #0f172a;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            /* KEY CHANGE: Add Flexbox to manage header and scrollable content */
+            padding: 0 20px 20px 20px;
+            /* Only bottom/left/right padding, header padding is handled in HTML */
+            display: flex;
+            /* Enable flexbox */
+            flex-direction: column;
+            /* Stack children vertically */
+            transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* Smoother transition */
+            z-index: 999;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .slide-panel.open {
+            right: 0;
+        }
+        /* --- PRODUCT IMAGE PREVIEW STYLES (Kept, but moved logic to JS) --- */
+        
+        .image-preview {
+            position: fixed;
+            top: 50%;
+            /* Hidden position: Off-screen to the right, far enough to not flicker */
+            right: -300px;
+            transform: translateY(-50%);
+            width: 288px;
+            /* w-72 */
+            height: 288px;
+            /* h-72 */
+            background: rgba(15, 23, 42, 0.9);
+            /* slate-900 with 90% opacity */
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            /* rounded-2xl */
+            padding: 1rem;
+            /* p-4 */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: right 0.4s ease-in-out, opacity 0.4s ease-in-out;
+            z-index: 500;
+        }
+        
+        .image-preview.visible {
+            right: 380px;
+            /* Repositioned to show next to the slide panel (350px wide + 30px gap) */
+            opacity: 1;
+        }
+        /* --- FLOATING CARD POSITIONS --- */
+        
+        .floating {
+            position: absolute;
+            will-change: transform;
+            transition: transform 0.05s ease-out;
+        }
+        
+        .floating.f1 {
+            top: 15%;
+            left: 10%;
+        }
+        
+        .floating.f2 {
+            top: 85%;
+            left: 90%;
+        }
+        
+        .floating.f3 {
+            top: 50%;
+            left: 40%;
+        }
+        
+        .floating.f4 {
+            top: 65%;
+            left: 15%;
+        }
+        
+        .floating.f5 {
+            top: 25%;
+            left: 80%;
+        }
+        
+        .floating.f6 {
+            top: 80%;
+            left: 45%;
+        }
+        
+        .floating.f7 {
+            top: 30%;
+            left: 60%;
+        }
+        /* --- CAROUSEL SPECIFIC STYLES --- */
+        /* Container for the carousel to hide overflowing images */
+        
+        #goBagImageCarouselContainer {
+            overflow: hidden;
+        }
+        /* The inner track that holds the images */
+        
+        #goBagImageCarousel {
+            display: flex;
+            /* w-[300%] is 3 times the container width (3 images) */
+            width: 300%;
+            transition: transform 0.3s ease-in-out;
+        }
+        /* The image elements inside the carousel */
+        
+        #goBagImageCarousel img {
+            width: 33.3333%;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+
+<body class="text-slate-100">
+
+    <header class="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-3 shadow-lg z-50 sticky-header">
+
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center">
+                <img src="logs.png" alt="Tech Safe Logo" class="w-full h-full object-cover">
+            </div>
+            <div>
+                <div class="font-extrabold text-xl leading-none">Tech Safe</div>
+                <div class="text-xs text-slate-400 mt-0.5">Stay safe. Stay connected. Be ready.</div>
+            </div>
+        </div>
+
+        <nav id="mainNav" class="hidden sm:flex space-x-2 p-1 bg-white/5 rounded-full shadow-inner">
+            <a href="#home" class="nav-link text-slate-300 hover:text-slate-900 hover:bg-slate-100 px-4 py-2 rounded-full font-semibold transition-colors duration-300">Home</a>
+            <a href="#about" class="nav-link text-slate-300 hover:text-slate-900 hover:bg-slate-100 px-4 py-2 rounded-full font-semibold transition-colors duration-300">About</a>
+            <a href="#order" class="nav-link text-slate-300 hover:text-slate-900 hover:bg-slate-100 px-4 py-2 rounded-full font-semibold transition-colors duration-300">Order</a>
+            <a href="#contact" class="nav-link text-slate-300 hover:text-slate-900 hover:bg-slate-100 px-4 py-2 rounded-full font-semibold transition-colors duration-300">Contact</a>
+        </nav>
+
+    </header>
+
+    <main class="pt-20">
+
+        <section id="home" class="px-4 py-16">
+            <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+
+                <div class="p-6 rounded-3xl bg-slate-800/20 backdrop-blur-sm shadow-xl border border-white/5">
+                    <h1 class="text-5xl font-extrabold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white to-sky-300">
+                        Welcome To Tech Safe
+                    </h1>
+
+                    <p class="text-lg text-slate-300 mb-6">
+                        "Welcome to Tech Safe: Your source for smart, reliable emergency gear that connects you to safety."
+                    </p>
+
+                    <button id="exploreButton" class="inline-block px-8 py-3 rounded-xl font-bold transition duration-300
+                                 bg-gradient-to-r from-emerald-400 to-sky-400 text-slate-900 shadow-xl shadow-emerald-500/30
+                                 hover:shadow-lg hover:from-emerald-300 hover:to-sky-300">
+                        Explore Our Gear →
+                    </button>
+                </div>
+
+                <div class="w-full rounded-3xl bg-slate-800/20 shadow-xl border border-white/5 overflow-hidden">
+
+                    <iframe width="200" height="300" src="bagopen.mp4" title="Embedded Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="px-4 py-16">
+            <div class="max-w-6xl mx-auto">
+                <div class="p-8 rounded-3xl bg-slate-800/20 backdrop-blur-sm shadow-xl border border-white/5">
+
+                    <h2 class="text-4xl font-extrabold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white to-emerald-300">
+                        About Tech Safe</h2>
+
+                    <p class="text-lg text-slate-300 mb-8 max-w-3xl">
+                        TechSafe creates practical and tech-ready solutions to help Filipinos stay prepared for emergencies. Our Smart Disaster Go Bag is designed to give families and individuals the basic tools and smart features they need to stay safe, connected, and ready
+                        during unexpected situations.
+
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+
+                        <div class="p-6 rounded-2xl bg-slate-900 hover:bg-slate-700/50 transition-colors duration-300 cursor-pointer shadow-lg hover:shadow-emerald-500/20" id="openProducts">
+                            <strong class="text-xl font-bold">Products 📦</strong>
+                            <div class="text-sm text-slate-400 mt-2">Click to view our innovative emergency gear.</div>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-slate-900 hover:bg-slate-700/50 transition-colors duration-300 cursor-pointer shadow-lg hover:shadow-sky-500/20" id="openMembers">
+                            <strong class="text-xl font-bold">The Team 🧑‍💻</strong>
+                            <div class="text-sm text-slate-400 mt-2">Click to meet the contributors behind Tech Safe.</div>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-slate-900 hover:bg-slate-700/50 transition-colors duration-300 cursor-pointer shadow-lg hover:shadow-indigo-500/20">
+                            <strong class="text-xl font-bold">Key Focus 💡</strong>
+                            <div class="text-sm text-slate-400 mt-2">Reliability, Technology, and Readiness.</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="order" class="px-4 py-16">
+            <div class="max-w-2xl mx-auto">
+                <div class="p-8 rounded-3xl bg-slate-800/20 backdrop-blur-sm shadow-xl border border-white/5">
+
+                    <h2 class="text-4xl font-extrabold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white to-orange-300">
+                        Place Your Order 🛍️</h2>
+
+                    <p class="text-lg text-slate-300 mb-6">Fill out the details below to secure your Tech Safe gear.</p>
+
+                    <form id="orderForm" class="space-y-4">
+                        <label for="product" class="block text-sm font-semibold text-slate-200">Product to
+                            Order</label>
+                        <input type="text" id="product" name="product" value="Smart Disaster Go Bag (Example)" required class="w-full p-3 rounded-lg border border-slate-700 bg-slate-900 text-white placeholder-slate-500 focus:border-emerald-400 focus:ring focus:ring-emerald-400/30 transition-colors">
+
+                        <label for="city" class="block text-sm font-semibold text-slate-200">City</label>
+                        <input type="text" id="city" name="city" placeholder="e.g., Cebu City" required class="w-full p-3 rounded-lg border border-slate-700 bg-slate-900 text-white placeholder-slate-500 focus:border-emerald-400 focus:ring focus:ring-emerald-400/30 transition-colors">
+
+                        <label for="address" class="block text-sm font-semibold text-slate-200">Complete Delivery
+                            Address</label>
+                        <input type="text" id="address" name="address" placeholder="House/Bldg No., Street Name, Barangay" required class="w-full p-3 rounded-lg border border-slate-700 bg-slate-900 text-white placeholder-slate-500 focus:border-emerald-400 focus:ring focus:ring-emerald-400/30 transition-colors">
+
+                        <label for="email" class="block text-sm font-semibold text-slate-200">Gmail/Email</label>
+                        <input type="email" id="email" name="email" placeholder="youremail@gmail.com" required class="w-full p-3 rounded-lg border border-slate-700 bg-slate-900 text-white placeholder-slate-500 focus:border-emerald-400 focus:ring focus:ring-emerald-400/30 transition-colors">
+
+                        <button type="submit" class="w-full mt-6 px-8 py-3 rounded-xl font-bold transition duration-300
+                                                 bg-gradient-to-r from-emerald-400 to-sky-400 text-slate-900 shadow-xl shadow-emerald-500/30
+                                                 hover:shadow-lg hover:from-emerald-300 hover:to-sky-300">
+                            Submit Order
+                        </button>
+
+                        <div id="successMessage" class="hidden mt-4 p-3 bg-emerald-900/50 border border-emerald-400 rounded-lg text-emerald-200 font-medium">
+                            Order submitted successfully! We will contact you soon. (Note: This is a placeholder action).
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="px-4 py-16">
+            <div class="max-w-xl mx-auto">
+                <div class="p-8 rounded-3xl bg-slate-800/20 backdrop-blur-sm shadow-xl border border-white/5 text-center">
+
+                    <h2 class="text-4xl font-extrabold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-300">
+                        Get in Touch 👋</h2>
+
+                    <p class="text-xl font-semibold mb-2 text-slate-200">TechSafe@gmail.com</p>
+
+                    <p class="text-xl font-semibold mb-1 text-slate-200">+63 935 4694 362</p>
+                    <p class="text-xl font-semibold mb-1 text-slate-200">Facebook TechSafe PH</p>
+
+                    <div class="space-y-2 text-sm text-slate-400">
+                        <p>We are based in Calindagan, Dumaguete City.</p>
+                        <p>Your safety is our priority.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="py-6 px-4 text-center text-sm text-slate-500 border-t border-slate-800">
+        © <span id="year"></span> Tech Safe. All rights reserved.
+    </footer>
+
+    <div id="imagePreview" class="image-preview">
+        <img id="previewImage" src="" alt="Product Preview" class="w-full h-full object-cover rounded-xl">
+        <p id="previewTitle" class="text-center text-sm font-semibold mt-2"></p>
+    </div>
+
+    <div id="productPanel" class="slide-panel">
+        <div class="flex justify-between items-center mb-6 flex-shrink-0 pt-5 pr-2">
+            <h3 id="productPanelTitle" class="text-2xl font-extrabold">📦 Our Products</h3>
+            <button id="closeProduct" class="text-sm font-semibold text-red-400 hover:text-red-300 transition-colors">
+                Close (X)
+            </button>
+        </div>
+
+        <div id="panelContentContainer" class="flex-grow overflow-y-auto pr-2">
+
+            <div id="productListView" class="space-y-4">
+                <div class="product-item p-4 bg-slate-900 rounded-xl border border-emerald-500/30 shadow-md cursor-pointer hover:bg-slate-700/50 transition-colors" data-id="goBag" data-image="bag.png" data-title="Smart Go Bag" data-color="emerald">
+                    <strong class="block text-lg">Smart Go Bag</strong>
+                    <p class="text-sm text-slate-400 mb-1">Tech-integrated emergency kit with smart tracking.</p>
+                    <span class="text-xs text-emerald-400 font-semibold">Click for details or hover for image →</span>
+                </div>
+
+                <div class="product-item p-4 bg-slate-900 rounded-xl border border-sky-500/30 shadow-md cursor-pointer hover:bg-slate-700/50 transition-colors" data-id="powerbank" data-image="solar.png" data-title="Solar Powerbank" data-color="sky">
+                    <strong class="block text-lg">Solar Powerbank</strong>
+                    <p class="text-sm text-slate-400 mb-1">High-capacity powerbank with built-in solar charging.</p>
+                    <span class="text-xs text-sky-400 font-semibold">Click for details or hover for image →</span>
+                </div>
+
+                <div class="product-item p-4 bg-slate-900 rounded-xl border border-indigo-500/30 shadow-md cursor-pointer hover:bg-slate-700/50 transition-colors" data-id="radio" data-image="https://placehold.co/400x400/6366F1/1F2937?text=Mini+Radio" data-title="Emergency Mini Radio"
+                    data-color="indigo">
+                    <strong class="block text-lg">Emergency Mini Radio</strong>
+                    <p class="text-sm text-slate-400 mb-1">Handheld, crank-powered AM/FM radio for crucial updates.</p>
+                    <span class="text-xs text-indigo-400 font-semibold">Click for details or hover for image →</span>
+                </div>
+                <div class="product-item p-4 bg-slate-900 rounded-xl border border-gray-500/30 shadow-md cursor-pointer hover:bg-slate-700/50 transition-colors" data-id="waterFilter" data-image="https://placehold.co/400x400/9CA3AF/1F2937?text=Water+Filter" data-title="Portable Water Filter"
+                    data-color="gray">
+                    <strong class="block text-lg">Portable Water Filter</strong>
+                    <p class="text-sm text-slate-400 mb-1">Personal water filter straw for clean drinking water.</p>
+                    <span class="text-xs text-gray-400 font-semibold">Click for details or hover for image →</span>
+                </div>
+                <div class="product-item p-4 bg-slate-900 rounded-xl border border-yellow-500/30 shadow-md cursor-pointer hover:bg-slate-700/50 transition-colors" data-id="blankets" data-image="https://placehold.co/400x400/F59E0B/1F2937?text=Emergency+Blanket" data-title="Thermal Blankets"
+                    data-color="yellow">
+                    <strong class="block text-lg">Emergency Thermal Blankets (2-Pack)</strong>
+                    <p class="text-sm text-slate-400 mb-1">Reflects 90% of body heat to prevent hypothermia.</p>
+                    <span class="text-xs text-yellow-400 font-semibold">Click for details or hover for image →</span>
+                </div>
+
+            </div>
+
+            <div id="productDetailsView" class="hidden">
+                <button id="backToProducts" class="mb-4 text-sm font-semibold text-sky-400 hover:text-sky-300 transition-colors">
+                    ← Back to Products
+                </button>
+
+                <div id="detailCard" class="p-4 rounded-xl shadow-xl mb-4 border-l-8 border-emerald-500 bg-slate-900">
+                    <div id="goBagImageCarouselContainer" class="w-full h-64 rounded-xl overflow-hidden hidden">
+                        <div id="goBagImageCarousel" class="h-full">
+                        </div>
+                    </div>
+
+                    <img id="detailImage" src="" alt="Product Detail Image" class="w-full h-auto rounded-xl shadow-xl">
+
+                    <div class="flex justify-between items-center mt-3">
+                        <div id="carouselDots" class="flex space-x-2">
+                        </div>
+                        <div id="goBagColorOptions" class="flex space-x-2 hidden">
+                            <button data-color="stealth" class="w-6 h-6 rounded-full bg-gray-800 ring-4 ring-offset-2 ring-offset-slate-900 ring-gray-600 transition-all duration-200" title="Stealth Black"></button>
+                            <button data-color="blue" class="w-6 h-6 rounded-full bg-sky-600 ring-4 ring-offset-2 ring-offset-slate-900 ring-sky-400 transition-all duration-200" title="Sea Blue"></button>
+                            <button data-color="orange" class="w-6 h-6 rounded-full bg-orange-600 ring-4 ring-offset-2 ring-offset-slate-900 ring-orange-400 transition-all duration-200" title="Safety Orange"></button>
+                        </div>
+                    </div>
+                </div>
+                <h4 id="detailTitle" class="text-xl font-bold mb-2"></h4>
+                <p id="detailDescription" class="text-sm text-slate-300 mb-4"></p>
+
+                <h5 class="text-lg font-semibold mb-2">Key Features:</h5>
+                <ul id="detailFeatures" class="text-sm list-disc list-inside space-y-1 text-slate-400 mb-4">
+                </ul>
+
+                <h5 class="text-lg font-semibold mb-2">Specifications:</h5>
+                <ul id="detailSpecs" class="text-sm list-disc list-inside space-y-1 text-slate-400 mb-6">
+                </ul>
+
+                <p id="detailChecklist" class="text-sm text-slate-300 mb-4">
+                </p>
+
+                <button id="detailOrderButton" class="w-full mt-2 px-8 py-3 rounded-xl font-bold transition duration-300 bg-gradient-to-r from-emerald-400 to-sky-400 text-slate-900 shadow-xl shadow-emerald-500/30 hover:shadow-lg hover:from-emerald-300 hover:to-sky-300">
+                    Order Now
+                </button>
+
+                <p class="text-center text-xs text-slate-600 mt-4 pb-1">End of Details</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="ContributionsPanel" class="slide-panel">
+        <div class="flex justify-between items-center mb-6 flex-shrink-0 pt-5 pr-2">
+            <h3 id="teamPanelTitle" class="text-2xl font-extrabold">👥 Team Contributions</h3>
+            <button id="closeContribution" class="text-sm font-semibold text-red-400 hover:text-red-300 transition-colors">
+                Close (X)
+            </button>
+        </div>
+
+        <div class="space-y-4 flex-grow overflow-y-auto pr-2">
+            <div id="memberListView">
+                <div class="member-item p-4 bg-slate-900 rounded-xl border border-emerald-500/30 cursor-pointer hover:bg-slate-700/50 transition-colors" data-id="pshyren" data-name="Pshyren May Viray" data-role="CEO" data-color="emerald">
+                    <strong class="block text-lg text-emerald-300">CEO</strong>
+                    <p class="text-base text-slate-200 mb-1">Pshyren May Viray</p>
+                    <span class="text-xs text-emerald-400 font-semibold">Click for profile →</span>
+                </div>
+
+                <div class="member-item p-4 bg-slate-900 rounded-xl border border-sky-500/30 cursor-pointer hover:bg-slate-700/50 transition-colors" data-id="harvey" data-name="Harvey Masalihit" data-role="Web Developer" data-color="sky">
+                    <strong class="block text-lg text-sky-300">Web Developer</strong>
+                    <p class="text-base text-slate-200 mb-1">Harvey Masalihit</p>
+                    <span class="text-xs text-sky-400 font-semibold">Click for profile →</span>
+                </div>
+
+                <div class="member-item p-4 bg-slate-900 rounded-xl border border-pink-500/30 cursor-pointer hover:bg-slate-700/50 transition-colors" data-id="kim" data-name="Kim Antigo" data-role="Designer" data-color="pink">
+                    <strong class="block text-lg text-pink-300">Designer</strong>
+                    <p class="text-base text-slate-200 mb-1">Kim Antigo</p>
+                    <span class="text-xs text-pink-400 font-semibold">Click for profile →</span>
+                </div>
+
+                <div class="member-item p-4 bg-slate-900 rounded-xl border border-indigo-500/30 cursor-pointer hover:bg-slate-700/50 transition-colors" data-id="irald" data-name="Irald Villaflores" data-role="Product Makers" data-color="indigo">
+                    <strong class="block text-lg text-indigo-300">Product Makers</strong>
+                    <p class="text-base text-slate-200 mb-1">Irald Villaflores</p>
+                    <span class="text-xs text-indigo-400 font-semibold">Click for profile →</span>
+                </div>
+
+                <div class="member-item p-4 bg-slate-900 rounded-xl border border-indigo-500/30 cursor-pointer hover:bg-slate-700/50 transition-colors" data-id="sammy" data-name="Sammy Bulagao" data-role="Product Makers" data-color="indigo">
+                    <strong class="block text-lg text-indigo-300">Product Makers</strong>
+                    <p class="text-base text-slate-200 mb-1">Sammy Bulagao</p>
+                    <span class="text-xs text-indigo-400 font-semibold">Click for profile →</span>
+                </div>
+            </div>
+
+            <div id="memberDetailsView" class="hidden">
+                <button id="backToMembers" class="mb-4 text-sm font-semibold text-sky-400 hover:text-sky-300 transition-colors">
+                    ← Back to Team
+                </button>
+
+                <div class="p-6 rounded-xl bg-slate-900 border" id="memberDetailCard">
+                    <h4 id="memberName" class="text-2xl font-bold mb-1"></h4>
+                    <p id="memberRole" class="text-lg font-semibold mb-4"></p>
+
+                    <h5 class="text-lg font-semibold mb-2 text-slate-300">Key Contributions:</h5>
+                    <p id="memberContribution" class="text-sm text-slate-400 space-y-2">
+                    </p>
+
+                    <p id="memberContact" class="mt-4 text-sm text-slate-500">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // --- Data Definitions (Updated for Go Bag Colors) ---
+        const productData = {
+            goBag: {
+                title: "Smart Disaster Go Bag",
+                description: "The ultimate emergency readiness kit. Engineered for the modern environment, the Smart Go Bag goes beyond basic survival with integrated technology to keep you and your family safe and connected. **Includes: Smart Tracker, Integrated Solar Panel, 5-in-1 Tool, First Aid Kit, Non-Perishable Rations.**",
+                image: {
+                    stealth: "black.png", // Placeholder image for Stealth Black
+                    blue: "blue.png", // Placeholder image for Sea Blue (The default image you had)
+                    orange: "orange.png" // Placeholder image for Safety Orange
+                },
+                colorOrder: ['stealth', 'blue', 'orange'], // Defines the order of images in the carousel
+                color: "emerald", // Default color for list item border
+                features: [
+                    "GPS/Bluetooth Tracker: Quickly locate the bag in low-light or stressful situations.",
+                    "Integrated Solar Panel: Emergency charging for your devices.",
+                    "Water-Resistant Shell: Protects contents from rain and splashes.",
+                    "5-in-1 Multi-Tool: Essential for utility and repairs.",
+                    "First Aid Kit: Comprehensive medical supplies.",
+                    "Non-Perishable Rations: Enough for 72 hours."
+                ],
+                specs: [
+                    "Dimensions: 18\" x 12\" x 8\" (Compact and easy to carry)",
+                    "Weight (Fully Packed): Approx 5 kg",
+                    "Material: 1000D Nylon, tear and abrasion resistant.",
+                    "Waterproof Rating: IPX5 (resistant to low-pressure water jets).",
+                    "Available Colors: Stealth Black, Ocean Blue, Safety Orange."
+                ],
+                checklist: "We recommend adding personal documents (copies), cash, and essential medications to the bag upon purchase. Rotate your non-perishable rations every 6 months to ensure freshness.",
+                price: "P2,500.00"
+            },
+            powerbank: {
+                title: "High-Capacity Solar Powerbank",
+                description: "Never run out of juice. This power bank features a massive capacity and integrated solar panels, ensuring your essential communication devices stay charged even during prolonged outages. **Perfect for prolonged power outages and camping.**",
+                image: "solar.png",
+                color: "sky",
+                features: [
+                    "25000mAh Capacity: Charges smartphones up to 6 times.",
+                    "Foldable Solar Panels: Efficient charging in direct sunlight.",
+                    "Dual USB Ports: Charge two devices simultaneously.",
+                    "Built-in LED Torch: Emergency lighting feature.",
+                    "Ruggedized, shock-proof casing."
+                ],
+                specs: [
+                    "Capacity: 25,000 mAh",
+                    "Inputs: USB-C, Solar Panel",
+                    "Material: ABS+PC fireproof material",
+                    "Charge Time (Solar): ~50 hours",
+                    "Charge Time (Wall): ~6 hours"
+                ],
+                checklist: "Keep the power bank at least 50% charged at all times. Test the solar panel charging monthly.",
+                price: "P1,300.00"
+            },
+            radio: {
+                title: "Emergency Crank Radio",
+                description: "Stay informed when all else fails. This handheld radio provides crucial AM/FM and weather band updates, powered by solar, crank, or battery power. **A non-digital essential for reliable information access.**",
+                image: "radio.png", // Updated to use a generic radio image placeholder
+                color: "indigo",
+                features: [
+                    "3-Way Power: Dynamo (Crank), Solar, and AAA Batteries.",
+                    "AM/FM & Weather Band: Tune in to emergency broadcasts.",
+                    "USB Output: Can provide trickle charge to a phone (very slow).",
+                    "Loud Siren: For signaling rescuers.",
+                    "Compact and lightweight design."
+                ],
+                specs: [
+                    "Frequency Bands: AM (520-1710 kHz), FM (87-108 MHz), NOAA Weather Band (7 channels).",
+                    "Power Output: 1W Speaker.",
+                    "Battery: 1000mAh rechargeable (internal).",
+                    "Crank Ratio: 1 minute of cranking provides ~10 minutes of radio time."
+                ],
+                checklist: "Crank the radio for a few minutes monthly to maintain internal battery health. Store in a dry place.",
+                price: "P600.00"
+            },
+            waterFilter: {
+                title: "Portable Water Filter Straw",
+                description: "Access safe drinking water from almost any source. The straw filter uses a multi-stage filtration process to remove bacteria, parasites, and microplastics. **Essential for survival situations where water quality is compromised.**",
+                image: "water.png",
+                color: "gray",
+                features: [
+                    "Multi-Stage Filtration: Removes 99.9999% of waterborne bacteria and 99.9% of protozoan parasites.",
+                    "Chemical-Free: Uses physical filtration media.",
+                    "High Flow Rate: Easy to drink through.",
+                    "Long Lifespan: Filters up to 1,500 liters (personal use).",
+                    "Lightweight and compact."
+                ],
+                specs: [
+                    "Length: 7.5 inches",
+                    "Weight: 60 grams",
+                    "Filter Pore Size: 0.1 micron",
+                    "Shelf Life: 5 years (unopened)"
+                ],
+                checklist: "Keep the ends capped when not in use. After using with contaminated water, rinse thoroughly with clean water if available. Back-flush after use to maintain flow.",
+                price: "P450.00"
+            },
+            blankets: {
+                title: "Emergency Thermal Blankets (2-Pack)",
+                description: "Space-age survival blankets that reflect up to 90% of body heat. Essential for preventing hypothermia in cold or shock situations. **A must-have item that is both lightweight and compact.**",
+                image: "emergency.png",
+                color: "yellow",
+                features: [
+                    "Heat Retention: Reflects 90% of body heat.",
+                    "Waterproof and Windproof: Provides protection from the elements.",
+                    "Ultra-Compact: Folds down smaller than a deck of cards.",
+                    "Lightweight: Weighs only 60g per blanket.",
+                    "Can be used as a ground tarp or signaling device."
+                ],
+                specs: [
+                    "Size: 52\" x 82\" (Large enough for an adult)",
+                    "Material: Metalized polyethylene.",
+                    "Color: Silver (High reflectivity)",
+                    "Package: Includes two (2) individual blankets."
+                ],
+                checklist: "These are single-use/limited-use items. Ensure they are dry and folded correctly for long-term storage.",
+                price: "P100.00"
+            }
+        };
+
+        const memberData = {
+            pshyren: {
+                name: "Pshyren May Viray",
+                role: "CEO",
+                color: "emerald",
+                contributions: "Oversaw the entire project lifecycle, established the core concept and mission, and finalized the product offering strategy. Designed the go-to-market plan and led executive presentations.",
+                contact: "Email: pshyren.v@techsafe.ph"
+            },
+            harvey: {
+                name: "Harvey Masalihit",
+                role: "Web Developer",
+                color: "sky",
+                contributions: "Responsible for the front-end design, implementation of the product list and detail panel using Tailwind CSS, and the development of the interactive features.",
+                contact: "Email: harvey.m@techsafe.ph"
+            },
+            jessica: {
+                name: "Jessica Marie Pacion",
+                role: "Logistics and Procurement",
+                color: "indigo",
+                contributions: "Managed the sourcing and procurement of all product components, established the supply chain, and developed the inventory management and fulfillment system.",
+                contact: "Email: jessica.p@techsafe.ph"
+            },
+            kim: {
+                name: "Kim Antigo",
+                role: "Designer",
+                color: "pink",
+                contributions: "Designed the overall aesthetic of the website and product packaging, focusing on user experience and brand identity.",
+                contact: "Email: kim.a@techsafe.ph"
+            },
+            irald: {
+                name: "Irald Villaflores",
+                role: "Product Maker",
+                color: "indigo",
+                contributions: "Contributed to the physical design and prototyping of the Smart Go Bag and its accessories, ensuring quality and durability.",
+                contact: "Email: irald.v@techsafe.ph"
+            },
+            sammy: {
+                name: "Sammy Bulagao",
+                role: "Product Maker",
+                color: "indigo",
+                contributions: "Assisted in the assembly and quality control of the first batch of Smart Go Bags and managed inventory tracking.",
+                contact: "Email: sammy.b@techsafe.ph"
+            }
+        };
+
+        // --- Panel and View Management ---
+
+        let currentView = 'default';
+        let currentProductId = null;
+        let currentImageIndex = 1; // 0: stealth, 1: blue, 2: orange (Default to 'blue')
+
+        // Element references
+        const productPanel = document.getElementById('productPanel');
+        const productPanelTitle = document.getElementById('productPanelTitle');
+        const panelContentContainer = document.getElementById('panelContentContainer');
+        const productListView = document.getElementById('productListView');
+        const productDetailsView = document.getElementById('productDetailsView');
+        const detailImage = document.getElementById('detailImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = document.getElementById('previewImage');
+        const previewTitle = document.getElementById('previewTitle');
+        const detailOrderButton = document.getElementById('detailOrderButton');
+        const detailCard = document.getElementById('detailCard');
+
+        // Team Panel references
+        const contributionsPanel = document.getElementById('ContributionsPanel');
+        const memberListView = document.getElementById('memberListView');
+        const memberDetailsView = document.getElementById('memberDetailsView');
+        const memberDetailCard = document.getElementById('memberDetailCard');
+
+        // CAROUSEL ELEMENTS (New)
+        const goBagImageCarouselContainer = document.getElementById('goBagImageCarouselContainer');
+        const goBagImageCarousel = document.getElementById('goBagImageCarousel');
+        const carouselDots = document.getElementById('carouselDots');
+        const goBagColorOptions = document.getElementById('goBagColorOptions');
+
+        // --- Utility Functions ---
+
+        // Utility function to reset all view classes
+        function resetViews() {
+            productListView.classList.add('hidden');
+            productDetailsView.classList.add('hidden');
+            memberListView.classList.add('hidden');
+            memberDetailsView.classList.add('hidden');
+
+            // Hide the carousel structure by default and show the single image
+            if (goBagImageCarouselContainer) goBagImageCarouselContainer.classList.add('hidden');
+            if (detailImage) detailImage.classList.remove('hidden');
+            if (goBagColorOptions) goBagColorOptions.classList.add('hidden');
+
+            productPanelTitle.textContent = 'Products'; // Reset title to default
+            memberDetailCard.className = 'p-6 rounded-xl bg-slate-900 border border-transparent';
+            detailCard.className = 'p-4 rounded-xl shadow-xl mb-4 border-l-8 border-transparent bg-slate-900';
+            currentImageIndex = 1; // Reset Go Bag index
+        }
+
+        // --- Carousel Management Function ---
+        function updateCarouselPosition(index, product) {
+            currentImageIndex = index;
+            const colorKey = product.colorOrder[index];
+
+            // 1. SCROLL THE CAROUSEL
+            const translateValue = -(index * (100 / product.colorOrder.length));
+            goBagImageCarousel.style.transform = `translateX(${translateValue}%)`;
+
+            // 2. UPDATE THE DOTS
+            document.querySelectorAll('#carouselDots button').forEach((dot, dotIndex) => {
+                dot.classList.remove('bg-gray-800');
+                if (dotIndex === index) {
+                    dot.classList.add('bg-gray-800');
+                }
+            });
+
+            // 3. UPDATE COLOR BUTTONS
+            document.querySelectorAll('#goBagColorOptions button').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-offset-2');
+                if (btn.getAttribute('data-color') === colorKey) {
+                    btn.classList.add('ring-4', 'ring-offset-2');
+                }
+            });
+
+            // 4. Update the detail card border color
+            let borderColorClass = '';
+            // Match colorKey to a Tailwind color utility suffix
+            if (colorKey === 'blue') {
+                borderColorClass = 'sky';
+            } else if (colorKey === 'stealth') {
+                borderColorClass = 'gray';
+            } else if (colorKey === 'orange') {
+                borderColorClass = 'orange';
+            }
+            // Safely replace the existing border class (using regex for flexibility)
+            detailCard.className = detailCard.className.replace(/border-l-8 border-(.*)-500/g, `border-l-8 border-${borderColorClass}-500`);
+            // If the old class wasn't found (first render), ensure it's set
+            if (!detailCard.className.includes('border-l-8')) {
+                detailCard.classList.add(`border-l-8`, `border-${borderColorClass}-500`);
+            }
+        }
+
+
+        // --- Rendering Functions (Simplified for brevity as they are mostly the same) ---
+
+        function renderProductList() {
+            // (The product list is pre-rendered in HTML, so we skip this function for now
+            // but the event listeners below will be correct for the HTML structure.)
+        }
+
+        function renderProductDetails(product, id) {
+            // Update Text Elements
+            document.getElementById('detailTitle').textContent = product.title;
+            document.getElementById('detailDescription').textContent = product.description;
+            detailOrderButton.textContent = `Order ${product.title} (${product.price})`;
+            detailOrderButton.onclick = () => {
+                document.getElementById('product').value = product.title;
+                document.getElementById('order').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            };
+
+            // Logic to switch between Carousel and Single Image
+            if (id === 'goBag') {
+                // Show Carousel structure and hide single image
+                goBagImageCarouselContainer.classList.remove('hidden');
+                detailImage.classList.add('hidden');
+                goBagColorOptions.classList.remove('hidden');
+
+                goBagImageCarousel.innerHTML = ''; // Clear previous images
+                carouselDots.innerHTML = ''; // Clear previous dots
+
+                // Create images for the carousel and dots
+                product.colorOrder.forEach((colorKey, index) => {
+                    // 1. Image
+                    const img = document.createElement('img');
+                    img.src = product.image[colorKey];
+                    img.alt = product.title + ' - ' + colorKey;
+                    img.className = 'w-full h-full object-contain flex-shrink-0';
+                    goBagImageCarousel.appendChild(img);
+
+                    // 2. Dot
+                    const dot = document.createElement('button');
+                    dot.className = `w-2 h-2 rounded-full transition-colors ${index === currentImageIndex ? 'bg-gray-800' : 'bg-gray-400'}`;
+                    dot.setAttribute('data-index', index);
+                    dot.addEventListener('click', () => updateCarouselPosition(index, product));
+                    carouselDots.appendChild(dot);
+                });
+
+                // Set initial position and color
+                updateCarouselPosition(currentImageIndex, product);
+
+            } else {
+                // Show Single Image and hide Carousel structure
+                goBagImageCarouselContainer.classList.add('hidden');
+                detailImage.classList.remove('hidden');
+                goBagColorOptions.classList.add('hidden');
+
+                // Set single image source
+                detailImage.src = product.image;
+
+                // Reset detail card border color for non-goBag items
+                detailCard.className = detailCard.className.replace(/border-l-8 border-(.*)-500/g, `border-l-8 border-${product.color}-500`);
+            }
+
+            // Update features list
+            const featuresList = document.getElementById('detailFeatures');
+            featuresList.innerHTML = product.features.map(f => `<li>${f}</li>`).join('');
+
+            // Update specs list
+            const specsList = document.getElementById('detailSpecs');
+            specsList.innerHTML = product.specs.map(s => `<li>${s}</li>`).join('');
+
+            // Update checklist
+            document.getElementById('detailChecklist').innerHTML = `<strong>Checklist:</strong> ${product.checklist}`;
+
+        }
+
+        function renderMemberDetails(member, id) {
+            document.getElementById('memberName').textContent = member.name;
+            document.getElementById('memberRole').textContent = member.role;
+            document.getElementById('memberContribution').textContent = member.contributions;
+            document.getElementById('memberContact').textContent = member.contact;
+
+            // Set border color
+            memberDetailCard.className = memberDetailCard.className.replace(/border-(.*)-500/g, `border-${member.color}-500`);
+            if (!memberDetailCard.className.includes('border-')) {
+                memberDetailCard.classList.add(`border-${member.color}-500`);
+            }
+        }
+
+        // --- View Control Functions ---
+
+        function showProductDetails(id) {
+            currentProductId = id;
+            const product = productData[id];
+
+            // Re-render the details
+            renderProductDetails(product, id);
+
+            // Switch views
+            productListView.classList.add('hidden');
+            productDetailsView.classList.remove('hidden');
+            productPanelTitle.textContent = product.title;
+        }
+
+        function showMemberDetails(id) {
+            const member = memberData[id];
+            renderMemberDetails(member, id);
+
+            memberListView.classList.add('hidden');
+            memberDetailsView.classList.remove('hidden');
+            productPanelTitle.textContent = `${member.name}`;
+        }
+
+        function openPanel(panel) {
+            if (panel === 'product') {
+                productPanel.classList.add('open');
+                contributionsPanel.classList.remove('open');
+                resetViews();
+                productListView.classList.remove('hidden');
+            } else if (panel === 'contributions') {
+                contributionsPanel.classList.add('open');
+                productPanel.classList.remove('open');
+                resetViews();
+                memberListView.classList.remove('hidden');
+                productPanelTitle.textContent = '👥 Team Contributions';
+            }
+        }
+
+        function closePanel() {
+            productPanel.classList.remove('open');
+            contributionsPanel.classList.remove('open');
+            hideImagePreview();
+        }
+
+        function showImagePreview(item) {
+            const id = item.getAttribute('data-id');
+            const product = productData[id];
+
+            if (id === 'goBag') {
+                // Use the currently selected image for Go Bag preview
+                const colorKey = product.colorOrder[currentImageIndex];
+                previewImage.src = product.image[colorKey];
+            } else {
+                // Use the single image for all other products
+                previewImage.src = product.image;
+            }
+
+            previewTitle.textContent = item.getAttribute('data-title');
+            imagePreview.classList.add('visible');
+        }
+
+        function hideImagePreview() {
+            imagePreview.classList.remove('visible');
+        }
+
+
+        // --- Event Listeners ---
+
+        document.getElementById('exploreButton').addEventListener('click', () => {
+            document.getElementById('order').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+        document.getElementById('openProducts').addEventListener('click', () => openPanel('product'));
+        document.getElementById('openMembers').addEventListener('click', () => openPanel('contributions'));
+        document.getElementById('closeProduct').addEventListener('click', closePanel);
+        document.getElementById('closeContribution').addEventListener('click', closePanel);
+
+        // Product Details Navigation
+        document.getElementById('backToProducts').addEventListener('click', () => {
+            resetViews();
+            productListView.classList.remove('hidden');
+            productPanelTitle.textContent = '📦 Our Products';
+        });
+
+        // Team Details Navigation
+        document.getElementById('backToMembers').addEventListener('click', () => {
+            resetViews();
+            memberListView.classList.remove('hidden');
+            productPanelTitle.textContent = '👥 Team Contributions';
+        });
+
+        // Initial rendering of lists
+        renderProductList(); // Reruns the function to attach new event listeners if needed
+
+        // Product List Item Listeners (Delegated to parent for efficiency)
+        document.querySelectorAll('#productListView .product-item').forEach(item => {
+            item.addEventListener('click', () => showProductDetails(item.getAttribute('data-id')));
+            item.addEventListener('mouseenter', () => showImagePreview(item));
+            item.addEventListener('mouseleave', hideImagePreview);
+        });
+
+        // Member List Item Listeners (Delegated to parent for efficiency)
+        document.querySelectorAll('#memberListView .member-item').forEach(item => {
+            item.addEventListener('click', () => showMemberDetails(item.getAttribute('data-id')));
+        });
+
+        // Order Form Submission (Placeholder action)
+        document.getElementById('orderForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            document.getElementById('successMessage').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('successMessage').classList.add('hidden');
+            }, 5000);
+        });
+
+        // Go Bag Color Button Listeners (New)
+        goBagColorOptions.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const newColor = btn.getAttribute('data-color');
+                const product = productData['goBag'];
+                const newIndex = product.colorOrder.indexOf(newColor);
+                if (newIndex !== -1) {
+                    updateCarouselPosition(newIndex, product);
+                    // Also update the image preview if it's visible
+                    if (imagePreview.classList.contains('visible')) {
+                        const item = document.querySelector(`.product-item[data-id="goBag"]`);
+                        if (item) showImagePreview(item);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
