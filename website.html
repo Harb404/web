@@ -327,6 +327,7 @@
             <a href="#about" class="nav-link text-slate-300 hover:text-slate-900 hover:bg-slate-100 px-4 py-2 rounded-full font-semibold transition-colors duration-300">About</a>
             <a href="#order" class="nav-link text-slate-300 hover:text-slate-900 hover:bg-slate-100 px-4 py-2 rounded-full font-semibold transition-colors duration-300">Order</a>
             <a href="#contact" class="nav-link text-slate-300 hover:text-slate-900 hover:bg-slate-100 px-4 py-2 rounded-full font-semibold transition-colors duration-300">Contact</a>
+            <button id="feedbackButton" class="text-slate-300 hover:text-slate-900 hover:bg-slate-100 px-4 py-2 rounded-full font-semibold transition-colors duration-300">Feedback</button>
         </nav>
 
     </header>
@@ -701,6 +702,47 @@
         </div>
     </div>
 
+    <!-- Feedback Panel -->
+    <div id="feedbackPanel" class="slide-panel">
+        <div class="flex justify-between items-center mb-6 flex-shrink-0 pt-5 pr-2">
+            <h3 class="text-2xl font-extrabold">💬 Send Feedback</h3>
+            <button id="closeFeedback" class="text-sm font-semibold text-red-400 hover:text-red-300 transition-colors">
+                Close (X)
+            </button>
+        </div>
+
+        <form id="feedbackForm" class="flex-grow overflow-y-auto pr-2 space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-slate-300 mb-2">Your Name</label>
+                <input type="text" id="feedbackName" placeholder="e.g., John Doe" class="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-400">
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-300 mb-2">Email</label>
+                <input type="email" id="feedbackEmail" placeholder="e.g., john@example.com" class="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-400">
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-300 mb-2">Rating</label>
+                <select id="feedbackRating" class="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-100 focus:outline-none focus:border-emerald-400">
+                    <option value="">Select a rating...</option>
+                    <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                    <option value="4">⭐⭐⭐⭐ Very Good</option>
+                    <option value="3">⭐⭐⭐ Good</option>
+                    <option value="2">⭐⭐ Fair</option>
+                    <option value="1">⭐ Poor</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-300 mb-2">Message</label>
+                <textarea id="feedbackMessage" placeholder="Share your thoughts, suggestions, or feedback..." rows="5" class="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-400 resize-none"></textarea>
+            </div>
+
+            <button type="submit" class="w-full px-4 py-3 rounded-lg bg-emerald-400 text-slate-900 font-bold hover:bg-emerald-300 transition-colors">Send Feedback</button>
+        </form>
+    </div>
+
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -927,6 +969,15 @@
         const orderBundleButton = document.getElementById('orderBundleButton');
         const orderLGUButton = document.getElementById('orderLGUButton');
 
+        // Feedback panel elements
+        const feedbackPanel = document.getElementById('feedbackPanel');
+        const closeFeedbackButton = document.getElementById('closeFeedback');
+        const feedbackForm = document.getElementById('feedbackForm');
+        const feedbackName = document.getElementById('feedbackName');
+        const feedbackEmail = document.getElementById('feedbackEmail');
+        const feedbackRating = document.getElementById('feedbackRating');
+        const feedbackMessage = document.getElementById('feedbackMessage');
+
         // Hero and overlay (PIP) videos
         const heroVideo = document.getElementById('heroVideo');
         const pipVideo = document.getElementById('pipVideo');
@@ -1106,6 +1157,7 @@
             contributionsPanel.classList.remove('open');
             focusPanel.classList.remove('open');
             pricePanel.classList.remove('open');
+            feedbackPanel.classList.remove('open');
             imagePreview.classList.remove('visible');
             document.body.style.overflow = 'auto'; // Restore scrolling
         }
@@ -1345,6 +1397,55 @@
         });
 
         closePriceButton.addEventListener('click', () => {
+            closeAllPanels();
+        });
+
+        // Feedback button listener
+        document.getElementById('feedbackButton').addEventListener('click', () => {
+            openPanel(feedbackPanel);
+        });
+
+        // Feedback panel handlers
+        closeFeedbackButton.addEventListener('click', () => {
+            closeAllPanels();
+        });
+
+        feedbackForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = feedbackName.value.trim();
+            const email = feedbackEmail.value.trim();
+            const rating = feedbackRating.value;
+            const message = feedbackMessage.value.trim();
+
+            // Simple validation
+            if (!name || !email || !rating || !message) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            // Prepare feedback data
+            const feedbackData = {
+                name: name,
+                email: email,
+                rating: rating,
+                message: message,
+                timestamp: new Date().toLocaleString()
+            };
+
+            // Log to console (in production, send to a backend service)
+            console.log('Feedback submitted:', feedbackData);
+
+            // Optional: Send to a backend endpoint
+            // fetch('/api/feedback', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(feedbackData)
+            // }).then(r => r.json()).catch(err => console.error(err));
+
+            // Show success message and reset form
+            alert('Thank you for your feedback! We appreciate your input.');
+            feedbackForm.reset();
             closeAllPanels();
         });
 
