@@ -116,6 +116,19 @@
                 transform: translate(-50%, -50%) translate(100px, 50px);
             }
         }
+        /* Hide native scrollbars while still allowing scrolling */
+        
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari, Opera */
+        }
         
         .floating {
             position: absolute;
@@ -285,6 +298,13 @@
             width: 33.3333%;
             flex-shrink: 0;
         }
+        /* Highlight for the 'Standard' feature label */
+        
+        .standard-label {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent-light);
+        }
     </style>
 </head>
 
@@ -326,15 +346,36 @@
                     </p>
 
                     <button id="exploreButton" class="inline-block px-8 py-3 rounded-xl font-bold transition duration-300
-                                 bg-gradient-to-r from-emerald-400 to-sky-400 text-slate-900 shadow-xl shadow-emerald-500/30
-                                 hover:shadow-lg hover:from-emerald-300 hover:to-sky-300">
+                                bg-gradient-to-r from-emerald-400 to-sky-400 text-slate-900 shadow-xl shadow-emerald-500/30
+                                hover:shadow-lg hover:from-emerald-300 hover:to-sky-300">
                         Explore Our Gear →
                     </button>
                 </div>
 
-                <div class="w-full rounded-3xl bg-slate-800/20 shadow-xl border border-white/5 overflow-hidden">
+                <div class="w-full rounded-3xl bg-slate-800/20 shadow-xl border border-white/5 overflow-hidden relative">
+                    <video id="heroVideo" class="w-full h-64 object-cover" autoplay muted playsinline>
+                        <source src="bagopen.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
 
-                    <iframe width="200" height="300" src="bagopen.mp4" title="Embedded Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full"></iframe>
+                    <!-- Picture-in-picture overlay video -->
+                    <video id="pipVideo" class="absolute bottom-4 right-4 w-40 h-24 object-cover rounded-lg shadow-lg" autoplay muted playsinline>
+                        <source src="bagcircle.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+
+                    <!-- Post-video horizontal gallery (hidden until hero video ends) -->
+                    <div id="postVideoGallery" class="hidden w-full h-64 overflow-x-auto">
+                        <div class="flex space-x-4 p-4">
+                            <img src="iraldg.png" alt="Photo 1" class="w-80 h-56 object-cover rounded-lg shadow-md">
+                            <img src="iraldor.png" alt="Photo 2" class="w-80 h-56 object-cover rounded-lg shadow-md">
+
+                        </div>
+                    </div>
+
+                    <button id="replayVideoBtn" class="hidden absolute inset-x-0 bottom-0 mx-auto mb-4 px-4 py-2 rounded bg-white/10 text-slate-100">Play Video Again</button>
+
+                    <!-- Model image feature removed -->
                 </div>
             </div>
         </section>
@@ -364,7 +405,7 @@
                             <div class="text-sm text-slate-400 mt-2">Click to meet the contributors behind Tech Safe.</div>
                         </div>
 
-                        <div class="p-6 rounded-2xl bg-slate-900 hover:bg-slate-700/50 transition-colors duration-300 cursor-pointer shadow-lg hover:shadow-indigo-500/20">
+                        <div class="p-6 rounded-2xl bg-slate-900 hover:bg-slate-700/50 transition-colors duration-300 cursor-pointer shadow-lg hover:shadow-indigo-500/20" id="openFocus">
                             <strong class="text-xl font-bold">Key Focus 💡</strong>
                             <div class="text-sm text-slate-400 mt-2">Reliability, Technology, and Readiness.</div>
                         </div>
@@ -399,8 +440,8 @@
                         <input type="email" id="email" name="email" placeholder="youremail@gmail.com" required class="w-full p-3 rounded-lg border border-slate-700 bg-slate-900 text-white placeholder-slate-500 focus:border-emerald-400 focus:ring focus:ring-emerald-400/30 transition-colors">
 
                         <button type="submit" class="w-full mt-6 px-8 py-3 rounded-xl font-bold transition duration-300
-                                                 bg-gradient-to-r from-emerald-400 to-sky-400 text-slate-900 shadow-xl shadow-emerald-500/30
-                                                 hover:shadow-lg hover:from-emerald-300 hover:to-sky-300">
+                                                bg-gradient-to-r from-emerald-400 to-sky-400 text-slate-900 shadow-xl shadow-emerald-500/30
+                                                hover:shadow-lg hover:from-emerald-300 hover:to-sky-300">
                             Submit Order
                         </button>
 
@@ -456,7 +497,7 @@
 
             <div id="productListView" class="space-y-4">
                 <div class="product-item p-4 bg-slate-900 rounded-xl border border-emerald-500/30 shadow-md cursor-pointer hover:bg-slate-700/50 transition-colors" data-id="goBag" data-image="bag.png" data-title="Smart Go Bag" data-color="emerald">
-                    <strong class="block text-lg">Smart Go Bag</strong>
+                    <strong class="block text-lg">Smart Go Bag Standard/Bundle/LGU</strong>
                     <p class="text-sm text-slate-400 mb-1">Tech-integrated emergency kit with smart tracking.</p>
                     <span class="text-xs text-emerald-400 font-semibold">Click for details or hover for image →</span>
                 </div>
@@ -529,6 +570,10 @@
                     Order Now
                 </button>
 
+                <button id="detailPricesButton" class="w-full mt-2 px-8 py-3 rounded-xl font-bold transition duration-300 bg-white/5 text-slate-100 border border-slate-700 hover:bg-white/10">
+                    View Prices
+                </button>
+
                 <p class="text-center text-xs text-slate-600 mt-4 pb-1">End of Details</p>
             </div>
         </div>
@@ -595,6 +640,66 @@
         </div>
     </div>
 
+    <div id="focusPanel" class="slide-panel">
+        <div class="flex justify-between items-center mb-6 flex-shrink-0 pt-5 pr-2">
+            <h3 class="text-2xl font-extrabold">💡 Key Focus</h3>
+            <button id="closeFocus" class="text-sm font-semibold text-red-400 hover:text-red-300 transition-colors">
+                Close (X)
+            </button>
+        </div>
+
+        <div class="flex-grow overflow-y-auto pr-2 space-y-6">
+            <div class="p-6 rounded-xl bg-slate-900 border border-indigo-500/30">
+                <h4 class="text-xl font-bold text-indigo-300 mb-3">🛡️ Reliability</h4>
+                <p class="text-sm text-slate-300">
+                    We build products designed to last. Every item in our Smart Go Bag is tested for durability and reliability in emergency situations. You can trust Tech Safe gear when it matters most.
+                </p>
+            </div>
+
+            <div class="p-6 rounded-xl bg-slate-900 border border-indigo-500/30">
+                <h4 class="text-xl font-bold text-indigo-300 mb-3">⚡ Technology</h4>
+                <p class="text-sm text-slate-300">
+                    We integrate smart technology into emergency preparedness. GPS trackers, solar charging, and connectivity features ensure you stay informed and powered during disasters.
+                </p>
+            </div>
+
+            <div class="p-6 rounded-xl bg-slate-900 border border-indigo-500/30">
+                <h4 class="text-xl font-bold text-indigo-300 mb-3">🎯 Readiness</h4>
+                <p class="text-sm text-slate-300">
+                    Being prepared means having the right tools ready before an emergency strikes. Our comprehensive kits give you and your family the essential items needed to respond quickly and safely.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="pricePanel" class="slide-panel">
+        <div class="flex justify-between items-center mb-6 flex-shrink-0 pt-5 pr-2">
+            <h3 class="text-2xl font-extrabold">💲 Pricing</h3>
+            <button id="closePrice" class="text-sm font-semibold text-red-400 hover:text-red-300 transition-colors">
+                Close (X)
+            </button>
+        </div>
+
+        <div class="flex-grow overflow-y-auto pr-2 space-y-6">
+            <div class="p-6 rounded-xl bg-slate-900 border border-emerald-500/30">
+                <h4 class="text-lg font-bold text-emerald-300 mb-2">Standard</h4>
+                <p id="priceStandardEl" class="text-xl font-extrabold text-slate-100">P2,999.00</p>
+                <button id="orderStandardButton" class="mt-3 px-4 py-2 rounded-lg bg-emerald-400 text-slate-900 font-semibold">Order Standard</button>
+            </div>
+
+            <div class="p-6 rounded-xl bg-slate-900 border border-emerald-500/30">
+                <h4 class="text-lg font-bold text-emerald-300 mb-2">Bundle</h4>
+                <p id="priceBundleEl" class="text-xl font-extrabold text-slate-100">P2,699.00</p>
+                <button id="orderBundleButton" class="mt-3 px-4 py-2 rounded-lg bg-emerald-400 text-slate-900 font-semibold">Order Bundle</button>
+            </div>
+
+            <div class="p-6 rounded-xl bg-slate-900 border border-emerald-500/30">
+                <h4 class="text-lg font-bold text-emerald-300 mb-2">LGU</h4>
+                <p id="priceLGUEl" class="text-xl font-extrabold text-slate-100">P2,400.00 / P2,000.00</p>
+                <button id="orderLGUButton" class="mt-3 px-4 py-2 rounded-lg bg-emerald-400 text-slate-900 font-semibold">Order LGU</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
@@ -612,12 +717,15 @@
                 colorOrder: ['stealth', 'blue', 'orange'], // Defines the order of images in the carousel
                 color: "emerald", // Default color for list item border
                 features: [
+                    "Standard",
                     "GPS/Bluetooth Tracker: Quickly locate the bag in low-light or stressful situations.",
                     "Integrated Solar Panel: Emergency charging for your devices.",
                     "Water-Resistant Shell: Protects contents from rain and splashes.",
                     "5-in-1 Multi-Tool: Essential for utility and repairs.",
                     "First Aid Kit: Comprehensive medical supplies.",
-                    "Non-Perishable Rations: Enough for 72 hours."
+                    "Non-Perishable Rations: Enough for 72 hours.",
+                    "Bundle",
+                    "All features of Standard, Minor discount for Minor discount for, Same inclusions, lower price"
                 ],
                 specs: [
                     "Dimensions: 18\" x 12\" x 8\" (Compact and easy to carry)",
@@ -627,455 +735,691 @@
                     "Available Colors: Stealth Black, Ocean Blue, Safety Orange."
                 ],
                 checklist: "We recommend adding personal documents (copies), cash, and essential medications to the bag upon purchase. Rotate your non-perishable rations every 6 months to ensure freshness.",
-                price: "P2,500.00"
+
+                priceStandard: "P2,999.00",
+                priceBundle: "P2,699.00",
+                priceLGUEl: "2,400.00/2,00.00"
             },
             powerbank: {
                 title: "High-Capacity Solar Powerbank",
                 description: "Never run out of juice. This power bank features a massive capacity and integrated solar panels, ensuring your essential communication devices stay charged even during prolonged outages. **Perfect for prolonged power outages and camping.**",
-                image: "solar.png",
+                image: "sollar.png",
                 color: "sky",
                 features: [
-                    "25000mAh Capacity: Charges smartphones up to 6 times.",
-                    "Foldable Solar Panels: Efficient charging in direct sunlight.",
+                    "20000mAh Capacity: Up to 5 full phone charges.",
+                    "Foldable Solar Panel: Recharges the unit using sunlight.",
                     "Dual USB Ports: Charge two devices simultaneously.",
-                    "Built-in LED Torch: Emergency lighting feature.",
-                    "Ruggedized, shock-proof casing."
+                    "Built-in LED Flashlight: Emergency lighting feature.",
+                    "Ruggedized Casing: Drop and dust resistant."
                 ],
                 specs: [
-                    "Capacity: 25,000 mAh",
-                    "Inputs: USB-C, Solar Panel",
-                    "Material: ABS+PC fireproof material",
-                    "Charge Time (Solar): ~50 hours",
-                    "Charge Time (Wall): ~6 hours"
+                    "Capacity: 20,000 mAh",
+                    "Input: Micro USB, USB-C, Solar",
+                    "Output: 5V/2.1A (Max)",
+                    "Material: ABS+PC+Silicone",
+                    "Weight: 450g"
                 ],
-                checklist: "Keep the power bank at least 50% charged at all times. Test the solar panel charging monthly.",
-                price: "P1,300.00"
+                checklist: "Keep the powerbank fully charged at all times. Store in a cool, dry place.",
+                price: "P950.00"
             },
             radio: {
-                title: "Emergency Crank Radio",
-                description: "Stay informed when all else fails. This handheld radio provides crucial AM/FM and weather band updates, powered by solar, crank, or battery power. **A non-digital essential for reliable information access.**",
-                image: "radio.png", // Updated to use a generic radio image placeholder
+                title: "Emergency Mini Radio",
+                description: "Stay informed when all other lines of communication fail. This compact radio is powered by a hand-crank and solar power, ensuring you can receive crucial weather and emergency alerts anytime, anywhere. **A must-have for every emergency kit.**",
+                image: "radio.png",
                 color: "indigo",
                 features: [
-                    "3-Way Power: Dynamo (Crank), Solar, and AAA Batteries.",
-                    "AM/FM & Weather Band: Tune in to emergency broadcasts.",
-                    "USB Output: Can provide trickle charge to a phone (very slow).",
-                    "Loud Siren: For signaling rescuers.",
-                    "Compact and lightweight design."
+                    "AM/FM/NOAA Weather Bands: Get all essential frequencies.",
+                    "Hand-Crank Dynamo: Never worry about dead batteries.",
+                    "Solar and USB Charging: Multiple power options.",
+                    "Integrated Flashlight: Provides emergency illumination.",
+                    "Siren Function: For signaling help."
                 ],
                 specs: [
-                    "Frequency Bands: AM (520-1710 kHz), FM (87-108 MHz), NOAA Weather Band (7 channels).",
-                    "Power Output: 1W Speaker.",
-                    "Battery: 1000mAh rechargeable (internal).",
-                    "Crank Ratio: 1 minute of cranking provides ~10 minutes of radio time."
+                    "Bands: AM (520-1710KHz), FM (87-108MHz), NOAA Weather",
+                    "Power Sources: Hand-crank, Solar Panel, 5V Micro USB",
+                    "Dimensions: 128 x 60 x 45mm",
+                    "Battery: 2000mAh Li-ion"
                 ],
-                checklist: "Crank the radio for a few minutes monthly to maintain internal battery health. Store in a dry place.",
+                checklist: "Test the crank and solar features monthly. Ensure the antenna is fully extended for best reception.",
                 price: "P600.00"
             },
             waterFilter: {
                 title: "Portable Water Filter Straw",
-                description: "Access safe drinking water from almost any source. The straw filter uses a multi-stage filtration process to remove bacteria, parasites, and microplastics. **Essential for survival situations where water quality is compromised.**",
+                description: "Access safe drinking water instantly from almost any fresh water source. This lightweight and compact filter is essential for survival in the wilderness or during long-term emergencies. **Filters up to 1,500 liters of water.**",
                 image: "water.png",
                 color: "gray",
                 features: [
-                    "Multi-Stage Filtration: Removes 99.9999% of waterborne bacteria and 99.9% of protozoan parasites.",
-                    "Chemical-Free: Uses physical filtration media.",
-                    "High Flow Rate: Easy to drink through.",
-                    "Long Lifespan: Filters up to 1,500 liters (personal use).",
-                    "Lightweight and compact."
+                    "Filters up to 1,500 Liters: Long-lasting utility.",
+                    "Removes 99.9999% of Waterborne Bacteria: Ensures safety.",
+                    "Chemical-Free Purification: Simple and effective.",
+                    "Compact and Lightweight: Easy to carry in a pocket or bag.",
+                    "High Flow Rate: Quick access to clean water."
                 ],
                 specs: [
-                    "Length: 7.5 inches",
-                    "Weight: 60 grams",
-                    "Filter Pore Size: 0.1 micron",
-                    "Shelf Life: 5 years (unopened)"
+                    "Filtration Capacity: 1,500 Liters",
+                    "Filtration: Hollow Fiber Ultrafiltration Membrane",
+                    "Size: 18cm x 2.5cm",
+                    "Weight: 55g",
+                    "Pore Size: 0.01 micron"
                 ],
-                checklist: "Keep the ends capped when not in use. After using with contaminated water, rinse thoroughly with clean water if available. Back-flush after use to maintain flow.",
+                checklist: "After each use, backflush with clean water. Do not allow the filter to freeze.",
                 price: "P450.00"
             },
             blankets: {
                 title: "Emergency Thermal Blankets (2-Pack)",
-                description: "Space-age survival blankets that reflect up to 90% of body heat. Essential for preventing hypothermia in cold or shock situations. **A must-have item that is both lightweight and compact.**",
+                description: "Mylar blankets are crucial for retaining body heat in cold or wet conditions. They are lightweight, reusable, and a vital addition to any kit. **Compactly folded and ready for immediate use.**",
                 image: "emergency.png",
                 color: "yellow",
                 features: [
-                    "Heat Retention: Reflects 90% of body heat.",
-                    "Waterproof and Windproof: Provides protection from the elements.",
-                    "Ultra-Compact: Folds down smaller than a deck of cards.",
-                    "Lightweight: Weighs only 60g per blanket.",
-                    "Can be used as a ground tarp or signaling device."
+                    "Retains 90% of Body Heat: Prevents hypothermia.",
+                    "Waterproof and Windproof: Full protection from elements.",
+                    "Lightweight and Durable: Reusable and easy to pack.",
+                    "Can be used as a ground cover or signal mirror.",
+                    "Two blankets included per pack."
                 ],
                 specs: [
-                    "Size: 52\" x 82\" (Large enough for an adult)",
-                    "Material: Metalized polyethylene.",
-                    "Color: Silver (High reflectivity)",
-                    "Package: Includes two (2) individual blankets."
+                    "Material: Mylar (Polyethylene Terephthalate)",
+                    "Dimensions (Unfolded): 52\" x 82\" (132cm x 210cm)",
+                    "Weight: 60g per blanket",
+                    "Color: Silver/Orange (Dual-sided)"
                 ],
-                checklist: "These are single-use/limited-use items. Ensure they are dry and folded correctly for long-term storage.",
-                price: "P100.00"
+                checklist: "Practice unfolding and refolding. Store in a cool, dry place away from sharp objects.",
+                price: "P250.00"
             }
         };
 
         const memberData = {
             pshyren: {
                 name: "Pshyren May Viray",
-                role: "CEO",
+                role: "CEO & Project Lead",
                 color: "emerald",
-                contributions: "Oversaw the entire project lifecycle, established the core concept and mission, and finalized the product offering strategy. Designed the go-to-market plan and led executive presentations.",
-                contact: "Email: pshyren.v@techsafe.ph"
+                contribution: `<p><strong>Oversaw overall project direction and business strategy.</strong></p>
+                            <p>Handled all administrative tasks and coordination. Defined the core vision of 'Tech Safe' as a solution-oriented emergency brand.</p>`,
+                contact: "Email: pshyrenviray@gmail.com | LinkedIn: /in/pshyren"
             },
             harvey: {
                 name: "Harvey Masalihit",
                 role: "Web Developer",
                 color: "sky",
-                contributions: "Responsible for the front-end design, implementation of the product list and detail panel using Tailwind CSS, and the development of the interactive features.",
-                contact: "Email: harvey.m@techsafe.ph"
-            },
-            jessica: {
-                name: "Jessica Marie Pacion",
-                role: "Logistics and Procurement",
-                color: "indigo",
-                contributions: "Managed the sourcing and procurement of all product components, established the supply chain, and developed the inventory management and fulfillment system.",
-                contact: "Email: jessica.p@techsafe.ph"
+                contribution: `<p><strong>Implemented all front-end code (HTML, CSS/Tailwind, JS).</strong></p>
+                            <p>Developed interactive features, including the sliding product and team panels, and ensured full responsiveness across devices.</p>`,
+                contact: "Email: harveymasalihit33@gmail.com | GitHub: /harveym"
             },
             kim: {
                 name: "Kim Antigo",
-                role: "Designer",
+                role: "Designer & Content Creator",
                 color: "pink",
-                contributions: "Designed the overall aesthetic of the website and product packaging, focusing on user experience and brand identity.",
-                contact: "Email: kim.a@techsafe.ph"
+                contribution: `<p><strong>Designed the UI/UX mockups and created brand assets.</strong></p>
+                            <p>Wrote the product descriptions and marketing copy. Ensured visual consistency across the entire website, including color schemes and typography.</p>`,
+                contact: "Email: kimantigogmail.com | Portfolio: /kim-design"
             },
             irald: {
                 name: "Irald Villaflores",
-                role: "Product Maker",
+                role: "Product Makers",
                 color: "indigo",
-                contributions: "Contributed to the physical design and prototyping of the Smart Go Bag and its accessories, ensuring quality and durability.",
-                contact: "Email: irald.v@techsafe.ph"
+                contribution: `<p><strong>Researched and specified product components for the Smart Go Bag.</strong></p>
+                            <p>Sourced potential suppliers for the solar powerbank and tracking device. Built the initial prototypes for the go bag.</p>`,
+                contact: "Email: iraldvillaflores@gmail.com"
             },
             sammy: {
                 name: "Sammy Bulagao",
-                role: "Product Maker",
+                role: "Product Makers",
                 color: "indigo",
-                contributions: "Assisted in the assembly and quality control of the first batch of Smart Go Bags and managed inventory tracking.",
-                contact: "Email: sammy.b@techsafe.ph"
+                contribution: `<p><strong>Assisted in assembly and quality control of the Go Bag prototypes.</strong></p>
+                            <p>Conducted field testing for durability and water resistance. Developed the initial Go Bag checklist and user manual content.</p>`,
+                contact: "Email: sammybulagao@gmail.com"
             }
         };
 
-        // --- Panel and View Management ---
 
-        let currentView = 'default';
-        let currentProductId = null;
-        let currentImageIndex = 1; // 0: stealth, 1: blue, 2: orange (Default to 'blue')
-
-        // Element references
+        // --- DOM Elements ---
+        const exploreButton = document.getElementById('exploreButton');
+        const openProductsButton = document.getElementById('openProducts');
         const productPanel = document.getElementById('productPanel');
-        const productPanelTitle = document.getElementById('productPanelTitle');
-        const panelContentContainer = document.getElementById('panelContentContainer');
+        const closeProductButton = document.getElementById('closeProduct');
         const productListView = document.getElementById('productListView');
         const productDetailsView = document.getElementById('productDetailsView');
+        const backToProductsButton = document.getElementById('backToProducts');
+        const detailOrderButton = document.getElementById('detailOrderButton'); // NEW ELEMENT
+        const detailTitle = document.getElementById('detailTitle');
+        const detailDescription = document.getElementById('detailDescription');
+        const detailFeatures = document.getElementById('detailFeatures');
+        const detailSpecs = document.getElementById('detailSpecs');
+        const detailChecklist = document.getElementById('detailChecklist');
         const detailImage = document.getElementById('detailImage');
+        const detailCard = document.getElementById('detailCard');
+
         const imagePreview = document.getElementById('imagePreview');
         const previewImage = document.getElementById('previewImage');
         const previewTitle = document.getElementById('previewTitle');
-        const detailOrderButton = document.getElementById('detailOrderButton');
-        const detailCard = document.getElementById('detailCard');
 
-        // Team Panel references
+        const openMembersButton = document.getElementById('openMembers');
         const contributionsPanel = document.getElementById('ContributionsPanel');
+        const closeContributionButton = document.getElementById('closeContribution');
         const memberListView = document.getElementById('memberListView');
         const memberDetailsView = document.getElementById('memberDetailsView');
+        const backToMembersButton = document.getElementById('backToMembers');
         const memberDetailCard = document.getElementById('memberDetailCard');
+        const memberName = document.getElementById('memberName');
+        const memberRole = document.getElementById('memberRole');
+        const memberContribution = document.getElementById('memberContribution');
 
-        // CAROUSEL ELEMENTS (New)
-        const goBagImageCarouselContainer = document.getElementById('goBagImageCarouselContainer');
+        const openFocusButton = document.getElementById('openFocus');
+        const focusPanel = document.getElementById('focusPanel');
+        const closeFocusButton = document.getElementById('closeFocus');
+        const memberContact = document.getElementById('memberContact');
+
         const goBagImageCarousel = document.getElementById('goBagImageCarousel');
+        const goBagImageCarouselContainer = document.getElementById('goBagImageCarouselContainer');
         const carouselDots = document.getElementById('carouselDots');
         const goBagColorOptions = document.getElementById('goBagColorOptions');
+        let currentCarouselIndex = 0;
+        let currentProductId = null; // Track which product is currently shown in the details view
 
-        // --- Utility Functions ---
+        // Price panel elements (for viewing Standard / Bundle prices)
+        const pricePanel = document.getElementById('pricePanel');
+        const closePriceButton = document.getElementById('closePrice');
+        const detailPricesButton = document.getElementById('detailPricesButton');
+        const priceStandardEl = document.getElementById('priceStandardEl');
+        const priceBundleEl = document.getElementById('priceBundleEl');
+        const priceLGUEl = document.getElementById('priceLGUEl');
+        const orderStandardButton = document.getElementById('orderStandardButton');
+        const orderBundleButton = document.getElementById('orderBundleButton');
+        const orderLGUButton = document.getElementById('orderLGUButton');
 
-        // Utility function to reset all view classes
-        function resetViews() {
-            productListView.classList.add('hidden');
-            productDetailsView.classList.add('hidden');
-            memberListView.classList.add('hidden');
-            memberDetailsView.classList.add('hidden');
+        // Hero and overlay (PIP) videos
+        const heroVideo = document.getElementById('heroVideo');
+        const pipVideo = document.getElementById('pipVideo');
 
-            // Hide the carousel structure by default and show the single image
-            if (goBagImageCarouselContainer) goBagImageCarouselContainer.classList.add('hidden');
-            if (detailImage) detailImage.classList.remove('hidden');
-            if (goBagColorOptions) goBagColorOptions.classList.add('hidden');
-
-            productPanelTitle.textContent = 'Products'; // Reset title to default
-            memberDetailCard.className = 'p-6 rounded-xl bg-slate-900 border border-transparent';
-            detailCard.className = 'p-4 rounded-xl shadow-xl mb-4 border-l-8 border-transparent bg-slate-900';
-            currentImageIndex = 1; // Reset Go Bag index
-        }
-
-        // --- Carousel Management Function ---
-        function updateCarouselPosition(index, product) {
-            currentImageIndex = index;
-            const colorKey = product.colorOrder[index];
-
-            // 1. SCROLL THE CAROUSEL
-            const translateValue = -(index * (100 / product.colorOrder.length));
-            goBagImageCarousel.style.transform = `translateX(${translateValue}%)`;
-
-            // 2. UPDATE THE DOTS
-            document.querySelectorAll('#carouselDots button').forEach((dot, dotIndex) => {
-                dot.classList.remove('bg-gray-800');
-                if (dotIndex === index) {
-                    dot.classList.add('bg-gray-800');
-                }
+        // Keep pipVideo roughly in sync with heroVideo
+        if (heroVideo && pipVideo) {
+            heroVideo.addEventListener('play', () => {
+                try {
+                    pipVideo.currentTime = heroVideo.currentTime;
+                } catch (e) {}
+                pipVideo.play().catch(() => {});
+            });
+            heroVideo.addEventListener('pause', () => pipVideo.pause());
+            heroVideo.addEventListener('seeked', () => {
+                try {
+                    pipVideo.currentTime = heroVideo.currentTime;
+                } catch (e) {}
             });
 
-            // 3. UPDATE COLOR BUTTONS
-            document.querySelectorAll('#goBagColorOptions button').forEach(btn => {
-                btn.classList.remove('ring-4', 'ring-offset-2');
-                if (btn.getAttribute('data-color') === colorKey) {
-                    btn.classList.add('ring-4', 'ring-offset-2');
-                }
+            // When the hero video ends, show the gallery (videos stay hidden)
+            const postVideoGallery = document.getElementById('postVideoGallery');
+            const replayVideoBtn = document.getElementById('replayVideoBtn');
+
+            heroVideo.addEventListener('ended', () => {
+                // hide videos
+                heroVideo.classList.add('hidden');
+                pipVideo.classList.add('hidden');
+
+                // show gallery; ensure replay button remains hidden
+                if (postVideoGallery) postVideoGallery.classList.remove('hidden');
+                if (replayVideoBtn) replayVideoBtn.classList.add('hidden');
+
+                // Initialize looping gallery and start auto-scroll (user interaction will stop it)
+                try {
+                    setupLoopingGallery(postVideoGallery);
+                    // start auto-scroll at ~60px/sec
+                    startAutoScroll(postVideoGallery, 60);
+
+                    // After 8s stop the auto-scroll and resume the videos (creates loop)
+                    let resumeTimer = setTimeout(() => {
+                        try {
+                            stopAutoScroll(postVideoGallery);
+                        } catch (e) {}
+                        if (postVideoGallery) postVideoGallery.classList.add('hidden');
+                        heroVideo.classList.remove('hidden');
+                        pipVideo.classList.remove('hidden');
+                        try {
+                            heroVideo.currentTime = 0;
+                            heroVideo.play().catch(() => {});
+                        } catch (e) {}
+                        try {
+                            pipVideo.currentTime = 0;
+                            pipVideo.play().catch(() => {});
+                        } catch (e) {}
+                    }, 8000);
+
+                    // If user interacts with the gallery, stop auto-scroll and cancel the resume
+                    const cancelOnUser = () => {
+                        try {
+                            stopAutoScroll(postVideoGallery);
+                        } catch (e) {}
+                        clearTimeout(resumeTimer);
+                    };
+                    postVideoGallery.addEventListener('pointerdown', cancelOnUser, {
+                        once: true
+                    });
+                    postVideoGallery.addEventListener('wheel', cancelOnUser, {
+                        once: true,
+                        passive: true
+                    });
+                } catch (e) {}
             });
 
-            // 4. Update the detail card border color
-            let borderColorClass = '';
-            // Match colorKey to a Tailwind color utility suffix
-            if (colorKey === 'blue') {
-                borderColorClass = 'sky';
-            } else if (colorKey === 'stealth') {
-                borderColorClass = 'gray';
-            } else if (colorKey === 'orange') {
-                borderColorClass = 'orange';
-            }
-            // Safely replace the existing border class (using regex for flexibility)
-            detailCard.className = detailCard.className.replace(/border-l-8 border-(.*)-500/g, `border-l-8 border-${borderColorClass}-500`);
-            // If the old class wasn't found (first render), ensure it's set
-            if (!detailCard.className.includes('border-l-8')) {
-                detailCard.classList.add(`border-l-8`, `border-${borderColorClass}-500`);
-            }
+            // Periodic drift correction
+            setInterval(() => {
+                if (!heroVideo.paused && !pipVideo.paused) {
+                    const d = Math.abs(heroVideo.currentTime - pipVideo.currentTime);
+                    if (d > 0.15) {
+                        try {
+                            pipVideo.currentTime = heroVideo.currentTime;
+                        } catch (e) {}
+                    }
+                }
+            }, 500);
         }
 
+        // Model image picker removed
 
-        // --- Rendering Functions (Simplified for brevity as they are mostly the same) ---
+        // Setup an infinite (wrap-around) gallery so users can manually scroll without visible scrollbars
+        function setupLoopingGallery(gallery) {
+            if (!gallery || gallery.dataset.loopInitialized) return;
+            const inner = gallery.querySelector('div');
+            if (!inner) return;
 
-        function renderProductList() {
-            // (The product list is pre-rendered in HTML, so we skip this function for now
-            // but the event listeners below will be correct for the HTML structure.)
+            // Measure original width before duplicating
+            const originalWidth = inner.scrollWidth;
+            if (!originalWidth) return;
+
+            // Duplicate the inner content to allow seamless wrap-around
+            inner.innerHTML = inner.innerHTML + inner.innerHTML;
+
+            // Position the scroll in the middle copy so user can scroll both directions
+            gallery.scrollLeft = originalWidth;
+
+            // Hide native scrollbars but allow scrolling
+            gallery.classList.add('no-scrollbar');
+
+            // Mark initialized
+            gallery.dataset.loopInitialized = '1';
+
+            // On scroll, wrap when reaching either end
+            gallery.addEventListener('scroll', () => {
+                const total = inner.scrollWidth;
+                const half = total / 2;
+                if (gallery.scrollLeft <= 0) {
+                    gallery.scrollLeft += half;
+                } else if (gallery.scrollLeft >= total - gallery.clientWidth - 1) {
+                    gallery.scrollLeft -= half;
+                }
+            }, {
+                passive: true
+            });
         }
 
-        function renderProductDetails(product, id) {
-            // Update Text Elements
-            document.getElementById('detailTitle').textContent = product.title;
-            document.getElementById('detailDescription').textContent = product.description;
-            detailOrderButton.textContent = `Order ${product.title} (${product.price})`;
-            detailOrderButton.onclick = () => {
-                document.getElementById('product').value = product.title;
-                document.getElementById('order').scrollIntoView({
-                    behavior: 'smooth'
-                });
-            };
+        // Start auto-scrolling the gallery to the left. Stops when user interacts.
+        function startAutoScroll(gallery, pxPerSecond = 60) {
+            if (!gallery) return;
+            // prevent multiple RAF loops
+            if (gallery._autoScrollRaf) return;
 
-            // Logic to switch between Carousel and Single Image
-            if (id === 'goBag') {
-                // Show Carousel structure and hide single image
-                goBagImageCarouselContainer.classList.remove('hidden');
-                detailImage.classList.add('hidden');
-                goBagColorOptions.classList.remove('hidden');
+            const inner = gallery.querySelector('div');
+            if (!inner) return;
 
-                goBagImageCarousel.innerHTML = ''; // Clear previous images
-                carouselDots.innerHTML = ''; // Clear previous dots
+            let last = performance.now();
 
-                // Create images for the carousel and dots
-                product.colorOrder.forEach((colorKey, index) => {
-                    // 1. Image
-                    const img = document.createElement('img');
-                    img.src = product.image[colorKey];
-                    img.alt = product.title + ' - ' + colorKey;
-                    img.className = 'w-full h-full object-contain flex-shrink-0';
-                    goBagImageCarousel.appendChild(img);
+            function step(now) {
+                const dt = now - last;
+                last = now;
+                const delta = (pxPerSecond * dt) / 1000;
+                gallery.scrollLeft += delta;
 
-                    // 2. Dot
-                    const dot = document.createElement('button');
-                    dot.className = `w-2 h-2 rounded-full transition-colors ${index === currentImageIndex ? 'bg-gray-800' : 'bg-gray-400'}`;
-                    dot.setAttribute('data-index', index);
-                    dot.addEventListener('click', () => updateCarouselPosition(index, product));
-                    carouselDots.appendChild(dot);
-                });
+                const total = inner.scrollWidth;
+                const half = total / 2;
+                // wrap when nearing the end to create seamless loop
+                if (gallery.scrollLeft >= total - gallery.clientWidth - 1) {
+                    gallery.scrollLeft -= half;
+                }
 
-                // Set initial position and color
-                updateCarouselPosition(currentImageIndex, product);
-
-            } else {
-                // Show Single Image and hide Carousel structure
-                goBagImageCarouselContainer.classList.add('hidden');
-                detailImage.classList.remove('hidden');
-                goBagColorOptions.classList.add('hidden');
-
-                // Set single image source
-                detailImage.src = product.image;
-
-                // Reset detail card border color for non-goBag items
-                detailCard.className = detailCard.className.replace(/border-l-8 border-(.*)-500/g, `border-l-8 border-${product.color}-500`);
+                gallery._autoScrollRaf = requestAnimationFrame(step);
             }
 
-            // Update features list
-            const featuresList = document.getElementById('detailFeatures');
-            featuresList.innerHTML = product.features.map(f => `<li>${f}</li>`).join('');
+            // stop auto-scroll on user interaction
+            const stopOnUser = () => stopAutoScroll(gallery);
+            gallery.addEventListener('pointerdown', stopOnUser, {
+                once: true
+            });
+            gallery.addEventListener('wheel', stopOnUser, {
+                once: true,
+                passive: true
+            });
 
-            // Update specs list
-            const specsList = document.getElementById('detailSpecs');
-            specsList.innerHTML = product.specs.map(s => `<li>${s}</li>`).join('');
-
-            // Update checklist
-            document.getElementById('detailChecklist').innerHTML = `<strong>Checklist:</strong> ${product.checklist}`;
-
+            gallery._autoScrollRaf = requestAnimationFrame(step);
         }
 
-        function renderMemberDetails(member, id) {
-            document.getElementById('memberName').textContent = member.name;
-            document.getElementById('memberRole').textContent = member.role;
-            document.getElementById('memberContribution').textContent = member.contributions;
-            document.getElementById('memberContact').textContent = member.contact;
-
-            // Set border color
-            memberDetailCard.className = memberDetailCard.className.replace(/border-(.*)-500/g, `border-${member.color}-500`);
-            if (!memberDetailCard.className.includes('border-')) {
-                memberDetailCard.classList.add(`border-${member.color}-500`);
+        function stopAutoScroll(gallery) {
+            if (!gallery) return;
+            if (gallery._autoScrollRaf) {
+                cancelAnimationFrame(gallery._autoScrollRaf);
+                gallery._autoScrollRaf = null;
             }
         }
 
-        // --- View Control Functions ---
+        // --- General Functions ---
 
-        function showProductDetails(id) {
-            currentProductId = id;
-            const product = productData[id];
-
-            // Re-render the details
-            renderProductDetails(product, id);
-
-            // Switch views
-            productListView.classList.add('hidden');
-            productDetailsView.classList.remove('hidden');
-            productPanelTitle.textContent = product.title;
-        }
-
-        function showMemberDetails(id) {
-            const member = memberData[id];
-            renderMemberDetails(member, id);
-
-            memberListView.classList.add('hidden');
-            memberDetailsView.classList.remove('hidden');
-            productPanelTitle.textContent = `${member.name}`;
+        function closeAllPanels() {
+            productPanel.classList.remove('open');
+            contributionsPanel.classList.remove('open');
+            focusPanel.classList.remove('open');
+            pricePanel.classList.remove('open');
+            imagePreview.classList.remove('visible');
+            document.body.style.overflow = 'auto'; // Restore scrolling
         }
 
         function openPanel(panel) {
-            if (panel === 'product') {
-                productPanel.classList.add('open');
-                contributionsPanel.classList.remove('open');
-                resetViews();
-                productListView.classList.remove('hidden');
-            } else if (panel === 'contributions') {
-                contributionsPanel.classList.add('open');
-                productPanel.classList.remove('open');
-                resetViews();
-                memberListView.classList.remove('hidden');
-                productPanelTitle.textContent = '👥 Team Contributions';
+            closeAllPanels(); // Close others just in case
+            panel.classList.add('open');
+            document.body.style.overflow = 'hidden'; // Prevent main page scrolling while panel is open
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            // Also close the product panel when we scroll to order
+            if (id === 'order') {
+                closeAllPanels();
             }
         }
 
-        function closePanel() {
-            productPanel.classList.remove('open');
-            contributionsPanel.classList.remove('open');
-            hideImagePreview();
+        // --- Carousel Logic (for Smart Go Bag) ---
+
+        function renderGoBagCarousel() {
+            const data = productData.goBag;
+            goBagImageCarousel.innerHTML = '';
+            carouselDots.innerHTML = '';
+
+            data.colorOrder.forEach((color, index) => {
+                // 1. Image
+                const img = document.createElement('img');
+                img.src = data.image[color];
+                img.alt = `${data.title} - ${color}`;
+                img.classList.add('object-cover', 'h-full', 'w-full');
+                goBagImageCarousel.appendChild(img);
+
+                // 2. Dot
+                const dot = document.createElement('div');
+                dot.classList.add('w-2', 'h-2', 'rounded-full', 'bg-slate-500/50', 'cursor-pointer', 'transition-colors');
+                if (index === 0) {
+                    dot.classList.remove('bg-slate-500/50');
+                    dot.classList.add('bg-sky-400');
+                }
+                dot.onclick = () => showCarouselImage(index);
+                carouselDots.appendChild(dot);
+            });
+
+            // 3. Color buttons (Optional - you can implement logic to switch colors here)
+            // For now, they only set the ring color/title based on the colorOrder
+            const colorButtons = goBagColorOptions.querySelectorAll('button');
+            colorButtons.forEach(button => {
+                button.onclick = () => {
+                    const color = button.dataset.color;
+                    const index = data.colorOrder.indexOf(color);
+                    if (index !== -1) {
+                        showCarouselImage(index);
+                    }
+                };
+            });
         }
 
-        function showImagePreview(item) {
-            const id = item.getAttribute('data-id');
-            const product = productData[id];
-
-            if (id === 'goBag') {
-                // Use the currently selected image for Go Bag preview
-                const colorKey = product.colorOrder[currentImageIndex];
-                previewImage.src = product.image[colorKey];
-            } else {
-                // Use the single image for all other products
-                previewImage.src = product.image;
+        function showCarouselImage(index) {
+            const data = productData.goBag;
+            const numImages = data.colorOrder.length;
+            if (index < 0) {
+                index = numImages - 1;
+            } else if (index >= numImages) {
+                index = 0;
             }
+            currentCarouselIndex = index;
+            goBagImageCarousel.style.transform = `translateX(-${currentCarouselIndex * 33.3333}%)`;
 
-            previewTitle.textContent = item.getAttribute('data-title');
-            imagePreview.classList.add('visible');
-        }
+            // Update dots
+            carouselDots.querySelectorAll('div').forEach((dot, i) => {
+                dot.classList.remove('bg-sky-400');
+                dot.classList.add('bg-slate-500/50');
+                if (i === currentCarouselIndex) {
+                    dot.classList.remove('bg-slate-500/50');
+                    dot.classList.add('bg-sky-400');
+                }
+            });
 
-        function hideImagePreview() {
-            imagePreview.classList.remove('visible');
+            // Update color option ring
+            goBagColorOptions.querySelectorAll('button').forEach((button, i) => {
+                button.classList.remove('ring-sky-400', 'ring-emerald-400', 'ring-orange-400', 'ring-gray-400');
+                if (i === currentCarouselIndex) {
+                    const color = data.colorOrder[i];
+                    // Example mapping for ring color based on data-color
+                    const ringColorMap = {
+                        'stealth': 'ring-gray-400',
+                        'blue': 'ring-sky-400',
+                        'orange': 'ring-orange-400'
+                    };
+                    button.classList.add(ringColorMap[color] || 'ring-white/50');
+                }
+            });
         }
 
 
         // --- Event Listeners ---
 
-        document.getElementById('exploreButton').addEventListener('click', () => {
-            document.getElementById('order').scrollIntoView({
-                behavior: 'smooth'
+        // 1. FIX: Change explore button to open the product panel
+        exploreButton.addEventListener('click', () => {
+            openPanel(productPanel);
+        });
+
+        // 2. Add listener to the Order button inside product details
+        detailOrderButton.addEventListener('click', () => {
+            // Get the current product's title and pre-fill the order form
+            const productTitle = detailTitle.textContent;
+            document.getElementById('product').value = productTitle;
+
+            scrollToSection('order');
+        });
+
+        // Open Products Panel from About section
+        openProductsButton.addEventListener('click', () => {
+            openPanel(productPanel);
+            // Default to list view when opened
+            productListView.classList.remove('hidden');
+            productDetailsView.classList.add('hidden');
+        });
+
+        // Close Products Panel
+        closeProductButton.addEventListener('click', () => {
+            closeAllPanels();
+        });
+
+        // Back button in Products Panel
+        backToProductsButton.addEventListener('click', () => {
+            productListView.classList.remove('hidden');
+            productDetailsView.classList.add('hidden');
+            detailCard.classList.remove('border-sky-500', 'border-indigo-500', 'border-gray-500', 'border-yellow-500', 'border-emerald-500');
+            detailCard.classList.add('border-l-8', 'border-emerald-500'); // Reset border for next selection
+            goBagImageCarouselContainer.classList.add('hidden');
+            detailImage.classList.remove('hidden');
+            goBagColorOptions.classList.add('hidden');
+            carouselDots.classList.add('hidden');
+        });
+
+        // Product Item Click (Open Details)
+        document.querySelectorAll('.product-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                                const id = item.dataset.id;
+                                const data = productData[id];
+
+                                // Set content
+                                detailTitle.textContent = data.title;
+                                detailDescription.innerHTML = data.description.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                                detailChecklist.textContent = data.checklist;
+                                detailOrderButton.textContent = `Order ${data.title} (${data.price})`;
+
+                                // Set the border color of the detail card
+                                detailCard.classList.remove('border-sky-500', 'border-indigo-500', 'border-gray-500', 'border-yellow-500', 'border-emerald-500');
+                                detailCard.classList.add(`border-${data.color}-500`);
+
+                                // Handle Go Bag (with carousel) or single image products
+                                if (id === 'goBag') {
+                                    goBagImageCarouselContainer.classList.remove('hidden');
+                                    detailImage.classList.add('hidden');
+                                    goBagColorOptions.classList.remove('hidden');
+                                    carouselDots.classList.remove('hidden');
+                                    renderGoBagCarousel(); // Render/reset the carousel
+                                    showCarouselImage(0); // Show the first image
+                                } else {
+                                    goBagImageCarouselContainer.classList.add('hidden');
+                                    detailImage.classList.remove('hidden');
+                                    detailImage.src = data.image;
+                                    goBagColorOptions.classList.add('hidden');
+                                    carouselDots.classList.add('hidden');
+                                }
+
+                                // Features list — make the "Standard" and "Bundle" labels slightly larger by wrapping them
+                                detailFeatures.innerHTML = data.features.map(f => `
+                    <li>${(['Standard','Bundle'].includes(f) ? `<span class="standard-label">${f}</span>` : f)}</li>
+                `).join('');
+
+                // Specs list
+                detailSpecs.innerHTML = data.specs.map(s => `<li>${s}</li>`).join('');
+
+                // Switch views
+                productListView.classList.add('hidden');
+                productDetailsView.classList.remove('hidden');
+            });
+
+            // Hover effects for image preview
+            item.addEventListener('mouseenter', (e) => {
+                if (!productDetailsView.classList.contains('hidden')) return; // Don't show preview if in detail view
+
+                const id = item.dataset.id;
+                currentProductId = id; // remember which product we're viewing in details
+                const data = productData[id];
+                const rect = productPanel.getBoundingClientRect();
+
+                // Only show a single image if not the Go Bag, or the first image of the Go Bag
+                previewImage.src = (id === 'goBag' ? data.image[data.colorOrder[0]] : data.image);
+                previewTitle.textContent = data.title;
+                imagePreview.classList.add('visible');
+            });
+
+            item.addEventListener('mouseleave', () => {
+                imagePreview.classList.remove('visible');
             });
         });
 
-        document.getElementById('openProducts').addEventListener('click', () => openPanel('product'));
-        document.getElementById('openMembers').addEventListener('click', () => openPanel('contributions'));
-        document.getElementById('closeProduct').addEventListener('click', closePanel);
-        document.getElementById('closeContribution').addEventListener('click', closePanel);
-
-        // Product Details Navigation
-        document.getElementById('backToProducts').addEventListener('click', () => {
-            resetViews();
-            productListView.classList.remove('hidden');
-            productPanelTitle.textContent = '📦 Our Products';
-        });
-
-        // Team Details Navigation
-        document.getElementById('backToMembers').addEventListener('click', () => {
-            resetViews();
+        // Open Members Panel from About section
+        openMembersButton.addEventListener('click', () => {
+            openPanel(contributionsPanel);
+            // Default to list view when opened
             memberListView.classList.remove('hidden');
-            productPanelTitle.textContent = '👥 Team Contributions';
+            memberDetailsView.classList.add('hidden');
         });
 
-        // Initial rendering of lists
-        renderProductList(); // Reruns the function to attach new event listeners if needed
-
-        // Product List Item Listeners (Delegated to parent for efficiency)
-        document.querySelectorAll('#productListView .product-item').forEach(item => {
-            item.addEventListener('click', () => showProductDetails(item.getAttribute('data-id')));
-            item.addEventListener('mouseenter', () => showImagePreview(item));
-            item.addEventListener('mouseleave', hideImagePreview);
+        // Close Contributions Panel
+        closeContributionButton.addEventListener('click', () => {
+            closeAllPanels();
         });
 
-        // Member List Item Listeners (Delegated to parent for efficiency)
-        document.querySelectorAll('#memberListView .member-item').forEach(item => {
-            item.addEventListener('click', () => showMemberDetails(item.getAttribute('data-id')));
+        // Key Focus Panel Listeners
+        openFocusButton.addEventListener('click', () => {
+            openPanel(focusPanel);
         });
 
-        // Order Form Submission (Placeholder action)
-        document.getElementById('orderForm').addEventListener('submit', (e) => {
+        closeFocusButton.addEventListener('click', () => {
+            closeAllPanels();
+        });
+
+        // Pricing panel listeners
+        detailPricesButton.addEventListener('click', () => {
+            if (!currentProductId) return;
+            const data = productData[currentProductId];
+            // Populate prices (fallback to generic price string)
+            priceStandardEl.textContent = data.priceStandard || data.price || 'N/A';
+            priceBundleEl.textContent = data.priceBundle || data.price || 'N/A';
+            priceLGUEl.textContent = data.priceLGUEl || data.price || 'N/A';
+            openPanel(pricePanel);
+        });
+
+        closePriceButton.addEventListener('click', () => {
+            closeAllPanels();
+        });
+
+        orderStandardButton.addEventListener('click', () => {
+            if (!currentProductId) return;
+            const data = productData[currentProductId];
+            document.getElementById('product').value = `${data.title} (Standard)`;
+            closeAllPanels();
+            scrollToSection('order');
+        });
+
+        orderBundleButton.addEventListener('click', () => {
+            if (!currentProductId) return;
+            const data = productData[currentProductId];
+            document.getElementById('product').value = `${data.title} (Bundle)`;
+            closeAllPanels();
+            scrollToSection('order');
+        });
+
+        orderLGUButton.addEventListener('click', () => {
+            if (!currentProductId) return;
+            const data = productData[currentProductId] || {};
+            const title = (data.title || '').trim() || 'Smart Disaster Go Bag';
+            document.getElementById('product').value = `${title} (LGU)`;
+            closeAllPanels();
+            scrollToSection('order');
+        });
+
+        // Back button in Contributions Panel
+        backToMembersButton.addEventListener('click', () => {
+            memberListView.classList.remove('hidden');
+            memberDetailsView.classList.add('hidden');
+            memberDetailCard.classList.remove('border-l-8', 'border-emerald-500', 'border-sky-500', 'border-pink-500', 'border-indigo-500');
+            memberDetailCard.classList.add('border-l-8', 'border-slate-500'); // Reset default border
+        });
+
+        // Member Item Click (Open Details)
+        document.querySelectorAll('.member-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const id = item.dataset.id;
+                const data = memberData[id];
+
+                // Set content
+                memberName.textContent = data.name;
+                memberRole.textContent = data.role;
+                memberContribution.innerHTML = data.contribution;
+                memberContact.textContent = data.contact;
+
+                // Set the border color of the detail card
+                memberDetailCard.classList.remove('border-emerald-500', 'border-sky-500', 'border-pink-500', 'border-indigo-500');
+                memberDetailCard.classList.add(`border-${data.color}-500`);
+
+                // Switch views
+                memberListView.classList.add('hidden');
+                memberDetailsView.classList.remove('hidden');
+            });
+        });
+
+        // Form Submission (Placeholder)
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
             e.preventDefault();
             document.getElementById('successMessage').classList.remove('hidden');
+            // In a real application, you would send this data to a server here.
             setTimeout(() => {
                 document.getElementById('successMessage').classList.add('hidden');
+                this.reset();
             }, 5000);
         });
 
-        // Go Bag Color Button Listeners (New)
-        goBagColorOptions.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const newColor = btn.getAttribute('data-color');
-                const product = productData['goBag'];
-                const newIndex = product.colorOrder.indexOf(newColor);
-                if (newIndex !== -1) {
-                    updateCarouselPosition(newIndex, product);
-                    // Also update the image preview if it's visible
-                    if (imagePreview.classList.contains('visible')) {
-                        const item = document.querySelector(`.product-item[data-id="goBag"]`);
-                        if (item) showImagePreview(item);
-                    }
-                }
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('#mainNav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                scrollToSection(targetId);
             });
         });
     </script>
