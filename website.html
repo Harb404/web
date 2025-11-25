@@ -549,7 +549,8 @@
                         <div id="goBagColorOptions" class="flex space-x-2 hidden">
                             <button data-color="stealth" class="w-6 h-6 rounded-full bg-gray-800 ring-4 ring-offset-2 ring-offset-slate-900 ring-gray-600 transition-all duration-200" title="Stealth Black"></button>
                             <button data-color="blue" class="w-6 h-6 rounded-full bg-sky-600 ring-4 ring-offset-2 ring-offset-slate-900 ring-sky-400 transition-all duration-200" title="Sea Blue"></button>
-                            <button data-color="orange" class="w-6 h-6 rounded-full bg-orange-600 ring-4 ring-offset-2 ring-offset-slate-900 ring-orange-400 transition-all duration-200" title="Safety Orange"></button>
+
+                            <button data-color="red" class="w-6 h-6 rounded-full bg-red-600 ring-4 ring-offset-2 ring-offset-slate-900 ring-red-400 transition-all duration-200" title="Safety Emergency Red"></button>
                         </div>
                     </div>
                 </div>
@@ -754,9 +755,9 @@
                 image: {
                     stealth: "black.png", // Placeholder image for Stealth Black
                     blue: "blue.png", // Placeholder image for Sea Blue (The default image you had)
-                    orange: "orange.png" // Placeholder image for Safety Orange
+                    red: "red.png" // Placeholder image for Safety Emergency Red
                 },
-                colorOrder: ['stealth', 'blue', 'orange'], // Defines the order of images in the carousel
+                colorOrder: ['stealth', 'blue', 'red'], // Defines the order of images in the carousel
                 color: "emerald", // Default color for list item border
                 features: [
                     "Standard",
@@ -774,13 +775,13 @@
                     "Weight (Fully Packed): Approx 5 kg",
                     "Material: 1000D Nylon, tear and abrasion resistant.",
                     "Waterproof Rating: IPX5 (resistant to low-pressure water jets).",
-                    "Available Colors: Stealth Black, Ocean Blue, Safety Orange."
+                    "Available Colors: Stealth Black, Ocean Blue, Emergency Red."
                 ],
                 checklist: "We recommend adding personal documents (copies), cash, and essential medications to the bag upon purchase. Rotate your non-perishable rations every 6 months to ensure freshness.",
 
                 priceStandard: "P2,999.00",
                 priceBundle: "P2,699.00",
-                priceLGUEl: "2,400.00/2,00.00"
+                priceLGUEl: "2,400.00/2,000.00"
             },
             powerbank: {
                 title: "High-Capacity Solar Powerbank",
@@ -802,7 +803,7 @@
                     "Weight: 450g"
                 ],
                 checklist: "Keep the powerbank fully charged at all times. Store in a cool, dry place.",
-                price: "P950.00"
+                price: "P1000.00"
             },
             radio: {
                 title: "Emergency Mini Radio",
@@ -885,7 +886,7 @@
                 color: "sky",
                 contribution: `<p><strong>Implemented all front-end code (HTML, CSS/Tailwind, JS).</strong></p>
                             <p>Developed interactive features, including the sliding product and team panels, and ensured full responsiveness across devices.</p>`,
-                contact: "Email: harveymasalihit33@gmail.com | GitHub: /harveym"
+                contact: "Email: harveymasalihit33@gmail.com | GitHub: Harb404"
             },
             kim: {
                 name: "Kim Antigo",
@@ -1010,14 +1011,19 @@
                 if (postVideoGallery) postVideoGallery.classList.remove('hidden');
                 if (replayVideoBtn) replayVideoBtn.classList.add('hidden');
 
-                // Initialize looping gallery and start auto-scroll (user interaction will stop it)
+                // Initialize looping gallery and start auto-scroll (user interaction will stop/respect it)
                 try {
                     setupLoopingGallery(postVideoGallery);
                     // start auto-scroll at ~60px/sec
                     startAutoScroll(postVideoGallery, 60);
 
+                    // track whether the user interacted to prevent automatic resume
+                    let userInteracted = false;
+
                     // After 8s stop the auto-scroll and resume the videos (creates loop)
                     let resumeTimer = setTimeout(() => {
+                        // If user already interacted, do not resume videos
+                        if (userInteracted) return;
                         try {
                             stopAutoScroll(postVideoGallery);
                         } catch (e) {}
@@ -1036,18 +1042,112 @@
 
                     // If user interacts with the gallery, stop auto-scroll and cancel the resume
                     const cancelOnUser = () => {
+                        userInteracted = true;
                         try {
-                            stopAutoScroll(postVideoGallery);
+                            // If transform-based auto-scroll was active, map transform position to scrollLeft
+                            const inner = postVideoGallery.querySelector('div');
+                            if (inner) {
+                                const st = window.getComputedStyle(inner);
+                                const tr = st.transform || '';
+                                let tx = 0;
+                                if (tr && tr !== 'none') {
+                                    // matrix(a, b, c, d, tx, ty)
+                                    const parts = tr.match(/matrix\((.+)\)/);
+                                    if (parts && parts[1]) {
+                                        const nums = parts[1].split(',').map(s => parseFloat(s.trim()));
+                                        if (nums.length >= 6) tx = nums[4];
+                                    }
+                                }
+                                const total = inner.scrollWidth || 0;
+                                const originalWidth = total / 2 || total;
+                                const offset = Math.abs(tx) % originalWidth;
+                                // stop auto-scroll then clear transform so manual scroll works
+                                try {
+                                    stopAutoScroll(postVideoGallery);
+                                } catch (e) {}
+                                inner.style.transform = '';
+                                // Position the native scroll to match visual position
+                                try {
+                                    postVideoGallery.scrollLeft = offset;
+                                } catch (e) {}
+                            } else {
+                                try {
+                                    stopAutoScroll(postVideoGallery);
+                                } catch (e) {}
+                            }
                         } catch (e) {}
-                        clearTimeout(resumeTimer);
+                        try {
+                            clearTimeout(resumeTimer);
+                        } catch (e) {}
                     };
-                    postVideoGallery.addEventListener('pointerdown', cancelOnUser, {
-                        once: true
-                    });
-                    postVideoGallery.addEventListener('wheel', cancelOnUser, {
-                        once: true,
-                        passive: true
-                    });
+
+                    // Listen for various user interaction events to reliably detect intent.
+                    // Treat only actual drag/scroll gestures as user interaction — simple clicks/taps on images should NOT cancel the animation.
+                    (function addGestureDetection(el, onUser) {
+                        // Wheel always counts as interaction
+                        el.addEventListener('wheel', onUser, {
+                            once: true,
+                            passive: true
+                        });
+
+                        // For pointer (mouse) interactions: detect movement between pointerdown and pointerup
+                        const onPointerDown = (e) => {
+                            let moved = false;
+                            const moveHandler = () => {
+                                moved = true;
+                            };
+                            const upHandler = () => {
+                                el.removeEventListener('pointermove', moveHandler);
+                                el.removeEventListener('pointerup', upHandler);
+                                el.removeEventListener('pointercancel', upHandler);
+                                if (moved) onUser();
+                            };
+                            el.addEventListener('pointermove', moveHandler, {
+                                passive: true
+                            });
+                            el.addEventListener('pointerup', upHandler, {
+                                once: true
+                            });
+                            el.addEventListener('pointercancel', upHandler, {
+                                once: true
+                            });
+                        };
+                        el.addEventListener('pointerdown', onPointerDown, {
+                            passive: true
+                        });
+
+                        // For touch interactions: detect touchmove
+                        const onTouchStart = (e) => {
+                            let moved = false;
+                            const touchMove = () => {
+                                moved = true;
+                            };
+                            const touchEnd = () => {
+                                el.removeEventListener('touchmove', touchMove);
+                                el.removeEventListener('touchend', touchEnd);
+                                el.removeEventListener('touchcancel', touchEnd);
+                                if (moved) onUser();
+                            };
+                            el.addEventListener('touchmove', touchMove, {
+                                passive: true
+                            });
+                            el.addEventListener('touchend', touchEnd, {
+                                once: true
+                            });
+                            el.addEventListener('touchcancel', touchEnd, {
+                                once: true
+                            });
+                        };
+                        el.addEventListener('touchstart', onTouchStart, {
+                            passive: true
+                        });
+
+                        // Also listen for programmatic/native scroll events as a fallback
+                        el.addEventListener('scroll', onUser, {
+                            once: true,
+                            passive: true
+                        });
+                    })(postVideoGallery, cancelOnUser);
                 } catch (e) {}
             });
 
@@ -1079,8 +1179,8 @@
             // Duplicate the inner content to allow seamless wrap-around
             inner.innerHTML = inner.innerHTML + inner.innerHTML;
 
-            // Position the scroll in the middle copy so user can scroll both directions
-            gallery.scrollLeft = originalWidth;
+            // Start scroll at the beginning (transform-based auto-scroll will control movement)
+            gallery.scrollLeft = 0;
 
             // Hide native scrollbars but allow scrolling
             gallery.classList.add('no-scrollbar');
@@ -1102,7 +1202,8 @@
             });
         }
 
-        // Start auto-scrolling the gallery to the left. Stops when user interacts.
+        // Start auto-scrolling the gallery to the left using transform for smooth animation.
+        // Stops when user interacts.
         function startAutoScroll(gallery, pxPerSecond = 60) {
             if (!gallery) return;
             // prevent multiple RAF loops
@@ -1111,20 +1212,28 @@
             const inner = gallery.querySelector('div');
             if (!inner) return;
 
+            // total width (after duplication, so inner contains two copies)
+            const total = inner.scrollWidth;
+            const originalWidth = total / 2 || total;
+
             let last = performance.now();
+            let offset = 0; // pixels scrolled into the first copy
+
+            inner.style.willChange = 'transform';
 
             function step(now) {
                 const dt = now - last;
                 last = now;
                 const delta = (pxPerSecond * dt) / 1000;
-                gallery.scrollLeft += delta;
+                offset += delta;
 
-                const total = inner.scrollWidth;
-                const half = total / 2;
-                // wrap when nearing the end to create seamless loop
-                if (gallery.scrollLeft >= total - gallery.clientWidth - 1) {
-                    gallery.scrollLeft -= half;
+                // wrap offset to stay within the first copy width
+                if (offset >= originalWidth) {
+                    offset -= originalWidth;
                 }
+
+                // translate the inner track left by offset
+                inner.style.transform = `translateX(-${Math.round(offset)}px)`;
 
                 gallery._autoScrollRaf = requestAnimationFrame(step);
             }
@@ -1133,6 +1242,10 @@
             const stopOnUser = () => stopAutoScroll(gallery);
             gallery.addEventListener('pointerdown', stopOnUser, {
                 once: true
+            });
+            gallery.addEventListener('touchstart', stopOnUser, {
+                once: true,
+                passive: true
             });
             gallery.addEventListener('wheel', stopOnUser, {
                 once: true,
@@ -1242,14 +1355,15 @@
 
             // Update color option ring
             goBagColorOptions.querySelectorAll('button').forEach((button, i) => {
-                button.classList.remove('ring-sky-400', 'ring-emerald-400', 'ring-orange-400', 'ring-gray-400');
+                button.classList.remove('ring-sky-400', 'ring-emerald-400', 'ring-orange-400', 'ring-gray-400', 'ring-red-400');
                 if (i === currentCarouselIndex) {
                     const color = data.colorOrder[i];
                     // Example mapping for ring color based on data-color
                     const ringColorMap = {
                         'stealth': 'ring-gray-400',
                         'blue': 'ring-sky-400',
-                        'orange': 'ring-orange-400'
+                        'orange': 'ring-orange-400',
+                        'red': 'ring-red-400'
                     };
                     button.classList.add(ringColorMap[color] || 'ring-white/50');
                 }
