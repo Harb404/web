@@ -357,17 +357,17 @@
 
                 <div class="w-full rounded-2xl bg-slate-800/20 shadow-xl border border-white/5 overflow-hidden relative">
 
-                    <video id="heroVideo" class="w-full h-96 object-cover" autoplay muted playsinline>
-        <source src="advt.mp4" type="video/mp4">
+                    <video id="heroVideo" class="w-full h-96 object-cover" autoplay muted playsinline loop>
+        <source src="Tech Safe Ads. wbg_music.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
                     <!-- Picture-in-picture overlay video -->
-                    <video id="pipVideo" class="absolute bottom-1 right-2 w-40 h-24 object-cover rounded-lg shadow-lg" autoplay muted playsinline>
-                        <source src="bagcircle.mp4" type="video/mp4">
+                    <video id="pipVideo" class="absolute bottom-1 right-2 w-40 h-24 object-cover rounded-lg shadow-lg" autoplay muted playsinline loop>
+                        <source src="advt.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
 
-                    <div class="absolute bottom-0 left-100 right-0 p-2 flex items-center gap-1 bg-black/0">
+                    <div class="absolute bottom-0 left-0 right-100 p-2 flex items-center gap-1 bg-black/0">
                         <span id="volumeIcon" class="text-white text-lg">🔇</span>
                         <input type="range" id="volumeSlider" min="0" max="100" value="0" class="flex-grow cursor-pointer appearance-none h-2 rounded-full bg-white/30 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white">
                     </div>
@@ -376,11 +376,7 @@
 
 
 
-                <!-- Picture-in-picture overlay video -->
-                <video id="pipVideo" class="absolute bottom-1 right-2 w-40 h-24 object-cover rounded-lg shadow-lg" autoplay muted playsinline>
-                        <source src="bagcircle.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+
 
 
 
@@ -745,64 +741,92 @@
         <div class="flex-grow overflow-y-auto pr-2 space-y-6">
             <div class="p-6 rounded-xl bg-slate-900 border border-emerald-500/30">
                 <h4 class="text-lg font-bold text-emerald-300 mb-2">Standard</h4>
-                <p id="priceStandardEl" class="text-xl font-extrabold text-slate-100">P2,999.00</p>
+                <p id="priceStandardEl" class="text-xl font-extrabold text-slate-100">P4,500.00</p>
                 <button id="orderStandardButton" class="mt-3 px-4 py-2 rounded-lg bg-emerald-400 text-slate-900 font-semibold">Order Standard</button>
             </div>
 
             <div class="p-6 rounded-xl bg-slate-900 border border-emerald-500/30">
                 <h4 class="text-lg font-bold text-emerald-300 mb-2">Bundle</h4>
-                <p id="priceBundleEl" class="text-xl font-extrabold text-slate-100">P2,699.00</p>
+                <p id="priceBundleEl" class="text-xl font-extrabold text-slate-100">P4,150.00</p>
                 <button id="orderBundleButton" class="mt-3 px-4 py-2 rounded-lg bg-emerald-400 text-slate-900 font-semibold">Order Bundle</button>
             </div>
 
             <div class="p-6 rounded-xl bg-slate-900 border border-emerald-500/30">
                 <h4 class="text-lg font-bold text-emerald-300 mb-2">LGU</h4>
-                <p id="priceLGUEl" class="text-xl font-extrabold text-slate-100">P2,400.00 / P2,000.00</p>
+                <p id="priceLGUEl" class="text-xl font-extrabold text-slate-100">P3,750.00 / P3,500.00</p>
                 <button id="orderLGUButton" class="mt-3 px-4 py-2 rounded-lg bg-emerald-400 text-slate-900 font-semibold">Order LGU</button>
             </div>
         </div>
     </div>
 
     <!-- Feedback Panel -->
-    <div id="feedbackPanel" class="slide-panel">
+    <div id="feedbackPanel" class="slide-panel flex flex-col h-full">
+
+        <!-- Header -->
         <div class="flex justify-between items-center mb-6 flex-shrink-0 pt-5 pr-2">
             <h3 class="text-2xl font-extrabold text-white">📝 Send Us Feedback</h3>
+
             <button id="closeFeedback" class="text-sm font-semibold text-red-400 hover:text-red-300 transition-colors">
-                Close (X)
-            </button>
-
+            Close (X)
+        </button>
         </div>
+        <!-- ✅ FIXED: closed header div -->
 
+        <!-- Body -->
         <div class="space-y-4 flex-grow overflow-y-auto pr-2">
-            <p class="text-slate-400 mb-4">We value your input! Let us know how we can improve.</p>
+
+            <p class="text-slate-400 mb-4">
+                We value your input! Let us know how we can improve.
+            </p>
 
             <form id="feedbackForm" class="space-y-5">
+
+                <!-- Name -->
                 <div>
-                    <label for="feedbackName" class="block text-sm font-semibold text-slate-200 mb-1">Your Name (Optional)</label>
-                    <input type="text" id="feedbackName" name="feedbackName" placeholder="Juan Dela Cruz" class="w-full p-3 rounded-lg border border-slate-700 bg-slate-900 text-white placeholder-slate-500 focus:border-indigo-400 focus:ring focus:ring-indigo-400/30 transition-colors">
+                    <label for="feedbackName" class="block text-sm font-semibold text-slate-200 mb-1">
+                    Your Name (Optional)
+                </label>
+                    <input type="text" id="feedbackName" name="feedbackName" placeholder="Juan Dela Cruz" class="w-full p-3 rounded-lg border border-slate-700 bg-slate-900 
+                           text-white placeholder-slate-500 
+                           focus:border-indigo-400 focus:ring focus:ring-indigo-400/30 transition-colors">
                 </div>
 
+                <!-- Email -->
                 <div>
-                    <label for="feedbackEmail" class="block text-sm font-semibold text-slate-200 mb-1">Email (Optional, for follow-up)</label>
-                    <input type="email" id="feedbackEmail" name="feedbackEmail" placeholder="youremail@gmail.com" class="w-full p-3 rounded-lg border border-slate-700 bg-slate-900 text-white placeholder-slate-500 focus:border-indigo-400 focus:ring focus:ring-indigo-400/30 transition-colors">
+                    <label for="feedbackEmail" class="block text-sm font-semibold text-slate-200 mb-1">
+                    Email (Optional, for follow-up)
+                </label>
+                    <input type="email" id="feedbackEmail" name="feedbackEmail" placeholder="youremail@gmail.com" class="w-full p-3 rounded-lg border border-slate-700 bg-slate-900 
+                           text-white placeholder-slate-500 
+                           focus:border-indigo-400 focus:ring focus:ring-indigo-400/30 transition-colors">
                 </div>
 
+                <!-- Feedback -->
                 <div>
-                    <label for="feedbackMessage" class="block text-sm font-semibold text-slate-200 mb-1">Your Feedback <span class="text-red-400">*</span></label>
-                    <textarea id="feedbackMessage" name="feedbackMessage" rows="5" required placeholder="Tell us about your experience..." class="w-full p-3 rounded-lg border border-slate-700 bg-slate-900 text-white placeholder-slate-500 focus:border-indigo-400 focus:ring focus:ring-indigo-400/30 transition-colors"></textarea>
+                    <label for="feedbackMessage" class="block text-sm font-semibold text-slate-200 mb-1">
+                    Your Feedback <span class="text-red-400">*</span>
+                </label>
+                    <textarea id="feedbackMessage" name="feedbackMessage" rows="5" required placeholder="Tell us about your experience..." class="w-full p-3 rounded-lg border border-slate-700 bg-slate-900 
+                           text-white placeholder-slate-500 
+                           focus:border-indigo-400 focus:ring focus:ring-indigo-400/30 transition-colors"></textarea>
                 </div>
 
+                <!-- Submit -->
                 <button type="submit" class="w-full mt-6 px-8 py-3 rounded-xl font-bold transition duration-300
-                                                bg-gradient-to-r from-indigo-400 to-purple-400 text-slate-900 shadow-xl shadow-indigo-500/30
-                                                hover:shadow-lg hover:from-indigo-300 hover:to-purple-300">
-                    Submit Feedback
-                </button>
+                       bg-gradient-to-r from-indigo-400 to-purple-400 text-slate-900 shadow-xl shadow-indigo-500/30
+                       hover:shadow-lg hover:from-indigo-300 hover:to-purple-300">
+                Submit Feedback
+            </button>
 
-                <div id="feedbackSuccessMessage" class="hidden mt-4 p-3 bg-indigo-900/50 border border-indigo-400 rounded-lg text-indigo-200 font-medium text-center">
-                    Feedback submitted successfully! Thank you for your input.
+                <!-- Success -->
+                <div id="feedbackSuccessMessage" class="hidden mt-4 p-3 bg-indigo-900/50 border border-indigo-400 rounded-lg 
+                       text-indigo-200 font-medium text-center">
+                    Feedback submitted successfully! Thank you.
                 </div>
+
             </form>
         </div>
+
     </div>
 
 
@@ -842,9 +866,9 @@
                 ],
                 checklist: "We recommend adding personal documents (copies), cash, and essential medications to the bag upon purchase. Rotate your non-perishable rations every 6 months to ensure freshness.",
 
-                priceStandard: "P2,999.00",
-                priceBundle: "P2,699.00",
-                priceLGUEl: "2,400.00/2,000.00"
+                priceStandard: "P4,500.00",
+                priceBundle: "P4,150.00",
+                priceLGUEl: "3,750.00/3,500.00"
             },
             powerbank: {
                 title: "High-Capacity Solar Powerbank",
@@ -1012,6 +1036,11 @@
             });
         });
 
+        const feedbackPanel = document.getElementById("feedbackPanel");
+        const closeFeedback = document.getElementById("closeFeedback");
+        // Feedback listeners attached in consolidated setup below to avoid duplicate/ungarded handlers
+
+
         const exploreButton = document.getElementById('exploreButton');
         const openProductsButton = document.getElementById('openProducts');
         const productPanel = document.getElementById('productPanel');
@@ -1066,27 +1095,45 @@
         const orderBundleButton = document.getElementById('orderBundleButton');
         const orderLGUButton = document.getElementById('orderLGUButton');
 
-        // Feedback panel elements
-        const feedbackPanel = document.getElementById('feedbackPanel');
-        const closeFeedbackButton = document.getElementById('closeFeedback');
-        const feedbackForm = document.getElementById('feedbackForm');
+        // --- Consolidated Feedback Setup (guarded) ---
+        const feedbackButtonEl = document.getElementById('feedbackButton');
+        const closeFeedbackButtonEl = document.getElementById('closeFeedback');
+        const feedbackFormEl = document.getElementById('feedbackForm');
         const feedbackName = document.getElementById('feedbackName');
         const feedbackEmail = document.getElementById('feedbackEmail');
-        const feedbackRating = document.getElementById('feedbackRating');
         const feedbackMessage = document.getElementById('feedbackMessage');
-        const feedbackSuccessMessage = document.getElementById('submitFeedbackSuccessMessage');
+        const feedbackSuccessMessage = document.getElementById('feedbackSuccessMessage');
+
+        if (feedbackButtonEl) {
+            feedbackButtonEl.addEventListener('click', () => {
+                if (feedbackPanel) openPanel(feedbackPanel);
+            });
+        }
+
+        if (closeFeedbackButtonEl) {
+            closeFeedbackButtonEl.addEventListener('click', () => {
+                closeAllPanels();
+            });
+        }
+
+        if (feedbackFormEl) {
+            feedbackFormEl.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (feedbackSuccessMessage) feedbackSuccessMessage.classList.remove('hidden');
+                feedbackFormEl.reset();
+                setTimeout(() => {
+                    if (feedbackSuccessMessage) feedbackSuccessMessage.classList.add('hidden');
+                }, 3000);
+            });
+        }
+
+
+        // (removed duplicate DOMContentLoaded feedback handler; consolidated above)
 
 
 
-        feedbackButton.addEventListener('click', () => {
-            feedbackPanel.classList.add('open');
-            // ... logic to show/hide the panel
-        });
 
-        closeFeedbackButton.addEventListener('click', () => {
-            feedbackPanel.classList.remove('open');
-            // ... logic to close the panel
-        });
+        // (old feedbackButton/closeFeedbackButton handlers removed - using consolidated setup)
 
         // Hero and overlay (PIP) videos
         const heroVideo = document.getElementById('heroVideo');
@@ -1482,44 +1529,68 @@
 
         // --- Event Listeners ---
 
-        // 1. FIX: Change explore button to open the product panel
-        exploreButton.addEventListener('click', () => {
-            openPanel(productPanel);
-        });
+        // 1. FIX: Change explore button to scroll to About, then open the product panel
+        if (exploreButton) {
+            exploreButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Explore button clicked');
+                // Open the product panel immediately without scrolling to About
+                if (productListView) productListView.classList.remove('hidden');
+                if (productDetailsView) productDetailsView.classList.add('hidden');
+                if (productPanel) {
+                    openPanel(productPanel);
+                    console.log('Opened productPanel');
+                } else {
+                    console.warn('productPanel not found');
+                }
+            });
+        } else {
+            console.warn('exploreButton element not found');
+        }
 
         // 2. Add listener to the Order button inside product details
-        detailOrderButton.addEventListener('click', () => {
-            // Get the current product's title and pre-fill the order form
-            const productTitle = detailTitle.textContent;
-            document.getElementById('product').value = productTitle;
-
-            scrollToSection('order');
-        });
+        if (detailOrderButton) {
+            detailOrderButton.addEventListener('click', () => {
+                // Get the current product's title and pre-fill the order form
+                const productTitle = detailTitle ? detailTitle.textContent : '';
+                const prodEl = document.getElementById('product');
+                if (prodEl) prodEl.value = productTitle;
+                scrollToSection('order');
+            });
+        }
 
         // Open Products Panel from About section
-        openProductsButton.addEventListener('click', () => {
-            openPanel(productPanel);
-            // Default to list view when opened
-            productListView.classList.remove('hidden');
-            productDetailsView.classList.add('hidden');
-        });
+        if (openProductsButton) {
+            openProductsButton.addEventListener('click', () => {
+                if (productPanel) openPanel(productPanel);
+                // Default to list view when opened
+                if (productListView) productListView.classList.remove('hidden');
+                if (productDetailsView) productDetailsView.classList.add('hidden');
+            });
+        }
 
         // Close Products Panel
-        closeProductButton.addEventListener('click', () => {
-            closeAllPanels();
-        });
+        if (closeProductButton) {
+            closeProductButton.addEventListener('click', () => {
+                closeAllPanels();
+            });
+        }
 
         // Back button in Products Panel
-        backToProductsButton.addEventListener('click', () => {
-            productListView.classList.remove('hidden');
-            productDetailsView.classList.add('hidden');
-            detailCard.classList.remove('border-sky-500', 'border-indigo-500', 'border-gray-500', 'border-yellow-500', 'border-emerald-500');
-            detailCard.classList.add('border-l-8', 'border-emerald-500'); // Reset border for next selection
-            goBagImageCarouselContainer.classList.add('hidden');
-            detailImage.classList.remove('hidden');
-            goBagColorOptions.classList.add('hidden');
-            carouselDots.classList.add('hidden');
-        });
+        if (backToProductsButton) {
+            backToProductsButton.addEventListener('click', () => {
+                if (productListView) productListView.classList.remove('hidden');
+                if (productDetailsView) productDetailsView.classList.add('hidden');
+                if (detailCard) {
+                    detailCard.classList.remove('border-sky-500', 'border-indigo-500', 'border-gray-500', 'border-yellow-500', 'border-emerald-500');
+                    detailCard.classList.add('border-l-8', 'border-emerald-500'); // Reset border for next selection
+                }
+                if (goBagImageCarouselContainer) goBagImageCarouselContainer.classList.add('hidden');
+                if (detailImage) detailImage.classList.remove('hidden');
+                if (goBagColorOptions) goBagColorOptions.classList.add('hidden');
+                if (carouselDots) carouselDots.classList.add('hidden');
+            });
+        }
 
         // Product Item Click (Open Details)
         document.querySelectorAll('.product-item').forEach(item => {
@@ -1587,123 +1658,103 @@
         });
 
         // Open Members Panel from About section
-        openMembersButton.addEventListener('click', () => {
-            openPanel(contributionsPanel);
-            // Default to list view when opened
-            memberListView.classList.remove('hidden');
-            memberDetailsView.classList.add('hidden');
-        });
+        if (openMembersButton) {
+            openMembersButton.addEventListener('click', () => {
+                if (contributionsPanel) openPanel(contributionsPanel);
+                // Default to list view when opened
+                if (memberListView) memberListView.classList.remove('hidden');
+                if (memberDetailsView) memberDetailsView.classList.add('hidden');
+            });
+        }
 
         // Close Contributions Panel
-        closeContributionButton.addEventListener('click', () => {
-            closeAllPanels();
-        });
+        if (closeContributionButton) {
+            closeContributionButton.addEventListener('click', () => {
+                closeAllPanels();
+            });
+        }
 
         // Key Focus Panel Listeners
-        openFocusButton.addEventListener('click', () => {
-            openPanel(focusPanel);
-        });
+        // Key Focus Panel Listeners
+        if (openFocusButton) {
+            openFocusButton.addEventListener('click', () => {
+                if (focusPanel) openPanel(focusPanel);
+            });
+        }
 
-        closeFocusButton.addEventListener('click', () => {
-            closeAllPanels();
-        });
+        if (closeFocusButton) {
+            closeFocusButton.addEventListener('click', () => {
+                closeAllPanels();
+            });
+        }
 
         // Pricing panel listeners
-        detailPricesButton.addEventListener('click', () => {
-            if (!currentProductId) return;
-            const data = productData[currentProductId];
-            // Populate prices (fallback to generic price string)
-            priceStandardEl.textContent = data.priceStandard || data.price || 'N/A';
-            priceBundleEl.textContent = data.priceBundle || data.price || 'N/A';
-            priceLGUEl.textContent = data.priceLGUEl || data.price || 'N/A';
-            openPanel(pricePanel);
-        });
+        // Pricing panel listeners
+        if (detailPricesButton) {
+            detailPricesButton.addEventListener('click', () => {
+                if (!currentProductId) return;
+                const data = productData[currentProductId];
+                // Populate prices (fallback to generic price string)
+                if (priceStandardEl) priceStandardEl.textContent = data.priceStandard || data.price || 'N/A';
+                if (priceBundleEl) priceBundleEl.textContent = data.priceBundle || data.price || 'N/A';
+                if (priceLGUEl) priceLGUEl.textContent = data.priceLGUEl || data.price || 'N/A';
+                if (pricePanel) openPanel(pricePanel);
+            });
+        }
 
-        closePriceButton.addEventListener('click', () => {
-            closeAllPanels();
-        });
+        if (closePriceButton) {
+            closePriceButton.addEventListener('click', () => {
+                closeAllPanels();
+            });
+        }
 
-        // Feedback button listener
-        document.getElementById('feedbackButton').addEventListener('click', () => {
-            openPanel(feedbackPanel);
-        });
+        // Feedback handling consolidated above; removed duplicate/unsafe listeners here.
 
-        // Feedback panel handlers
-        closeFeedbackButton.addEventListener('click', () => {
-            closeAllPanels();
-        });
+        if (orderStandardButton) {
+            orderStandardButton.addEventListener('click', () => {
+                if (!currentProductId) return;
+                const data = productData[currentProductId];
+                const prodEl = document.getElementById('product');
+                if (prodEl) prodEl.value = `${data.title} (Standard)`;
+                closeAllPanels();
+                scrollToSection('order');
+            });
+        }
 
-        feedbackForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+        if (orderBundleButton) {
+            orderBundleButton.addEventListener('click', () => {
+                if (!currentProductId) return;
+                const data = productData[currentProductId];
+                const prodEl = document.getElementById('product');
+                if (prodEl) prodEl.value = `${data.title} (Bundle)`;
+                closeAllPanels();
+                scrollToSection('order');
+            });
+        }
 
-            const name = feedbackName.value.trim();
-            const email = feedbackEmail.value.trim();
-            const rating = feedbackRating.value;
-            const message = feedbackMessage.value.trim();
-
-            // Simple validation
-            if (!name || !email || !rating || !message) {
-                alert('Please fill in all fields.');
-                return;
-            }
-
-            // Prepare feedback data
-            const feedbackData = {
-                name: name,
-                email: email,
-                rating: rating,
-                message: message,
-                timestamp: new Date().toLocaleString()
-            };
-
-            // Log to console (in production, send to a backend service)
-            console.log('Feedback submitted:', feedbackData);
-
-            // Example: send feedback to a backend endpoint (this is a placeholder and won't work without a server)
-             fetch('/api/feedback', {
-                 method: 'POST',
-                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(feedbackData)
-             }).then(r => r.json()).catch(err => console.error(err));
-
-            // Show success message and reset form
-            alert('Thank you for your feedback! We appreciate your input.');
-            feedbackForm.reset();
-            closeAllPanels();
-        });
-
-        orderStandardButton.addEventListener('click', () => {
-            if (!currentProductId) return;
-            const data = productData[currentProductId];
-            document.getElementById('product').value = `${data.title} (Standard)`;
-            closeAllPanels();
-            scrollToSection('order');
-        });
-
-        orderBundleButton.addEventListener('click', () => {
-            if (!currentProductId) return;
-            const data = productData[currentProductId];
-            document.getElementById('product').value = `${data.title} (Bundle)`;
-            closeAllPanels();
-            scrollToSection('order');
-        });
-
-        orderLGUButton.addEventListener('click', () => {
-            if (!currentProductId) return;
-            const data = productData[currentProductId] || {};
-            const title = (data.title || '').trim() || 'Smart Disaster Go Bag';
-            document.getElementById('product').value = `${title} (LGU)`;
-            closeAllPanels();
-            scrollToSection('order');
-        });
+        if (orderLGUButton) {
+            orderLGUButton.addEventListener('click', () => {
+                if (!currentProductId) return;
+                const data = productData[currentProductId] || {};
+                const title = (data.title || '').trim() || 'Smart Disaster Go Bag';
+                const prodEl = document.getElementById('product');
+                if (prodEl) prodEl.value = `${title} (LGU)`;
+                closeAllPanels();
+                scrollToSection('order');
+            });
+        }
 
         // Back button in Contributions Panel
-        backToMembersButton.addEventListener('click', () => {
-            memberListView.classList.remove('hidden');
-            memberDetailsView.classList.add('hidden');
-            memberDetailCard.classList.remove('border-l-8', 'border-emerald-500', 'border-sky-500', 'border-pink-500', 'border-indigo-500');
-            memberDetailCard.classList.add('border-l-8', 'border-slate-500'); // Reset default border
-        });
+        if (backToMembersButton) {
+            backToMembersButton.addEventListener('click', () => {
+                if (memberListView) memberListView.classList.remove('hidden');
+                if (memberDetailsView) memberDetailsView.classList.add('hidden');
+                if (memberDetailCard) {
+                    memberDetailCard.classList.remove('border-l-8', 'border-emerald-500', 'border-sky-500', 'border-pink-500', 'border-indigo-500');
+                    memberDetailCard.classList.add('border-l-8', 'border-slate-500'); // Reset default border
+                }
+            });
+        }
 
         // Member Item Click (Open Details)
         document.querySelectorAll('.member-item').forEach(item => {
@@ -1728,15 +1779,19 @@
         });
 
         // Form Submission (Placeholder)
-        document.getElementById('orderForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            document.getElementById('successMessage').classList.remove('hidden');
-            // In a real application, you would send this data to a server here.
-            setTimeout(() => {
-                document.getElementById('successMessage').classList.add('hidden');
-                this.reset();
-            }, 5000);
-        });
+        const orderFormEl = document.getElementById('orderForm');
+        if (orderFormEl) {
+            orderFormEl.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const successEl = document.getElementById('successMessage');
+                if (successEl) successEl.classList.remove('hidden');
+                // In a real application, you would send this data to a server here.
+                setTimeout(() => {
+                    if (successEl) successEl.classList.add('hidden');
+                    this.reset();
+                }, 5000);
+            });
+        }
 
         // Smooth scrolling for navigation links
         document.querySelectorAll('#mainNav a').forEach(anchor => {
